@@ -1,2 +1,6 @@
-open MONSTRE.ml
-type_monstre
+open monstre
+module AVENTURE =
+struct
+ 
+end;;
+
