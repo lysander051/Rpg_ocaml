@@ -1,12 +1,8 @@
 module PERSONNAGE = 
-struct
-type classe = Archer | Guerrier | Magicien
+struct 
+  type classe = Archer | Guerrier | Magicien
   type genre = Homme | Femme
-  type objet = Poulet | Eponge | Piece
-  type qte_objet = { obj : objet; quantite : int }
-      
-  type sac = { poulet : int; eponge : int; piece : int } 
-  type perso = { nom : string; sexe : genre; role : classe; pv : int; xp : int; le_sac : sac; niveau : int } 
+  type perso = { nom : string; sexe : genre; role : classe; pv : int; xp : int; niveau : int } 
   
   let classe_genre = fun perso -> match (perso.sexe, perso.role) with
     | (Homme, Archer) -> "Archer"
@@ -16,7 +12,18 @@ type classe = Archer | Guerrier | Magicien
     | (Femme, Guerrier) -> "Guerriere"
     | (Femme, Magicien) -> "Magicienne"
 
-  let contenu_sac = fun sac ->  string_of_int sac.poulet ^ " poulet" ^ "\n" ^ 
-                                string_of_int sac.eponge ^ " éponges" ^ "\n" ^
-                                string_of_int sac.piece ^ " pièces"
-  let afficher_sac = fun sac -> print_string(contenu_sac sac)
+      
+                 
+  let init_perso = { nom = "Maxime"; sexe = Homme; role = Archer; pv = 20; xp = 0 ; niveau = 1} 
+  
+  
+      (*let remplir_sac = fun x y z -> { poulet = x; eponge = y; piece = z }  *)
+  let etat_perso = fun perso -> perso.nom ^ " | " ^ (classe_genre perso) ^ "  Niveau " ^ string_of_int (perso.niveau) ^ "\n"
+                                ^ " Points de vie  | " ^ string_of_int perso.pv ^ "\n" ^
+                                " Expérience  | " ^ string_of_int perso.xp 
+  let afficher_infos_perso = fun perso -> print_string(etat_perso perso)
+end;;
+
+print_string("\n");;
+PERSONNAGE.afficher_infos_perso PERSONNAGE.init_perso;;
+
