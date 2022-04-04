@@ -1,2 +1,1 @@
-open MONSTRE.ml
-type_monstre
+print_string "enfin";;

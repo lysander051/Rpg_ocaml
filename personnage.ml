@@ -1,4 +1,4 @@
-module JOUEUR = 
+module PERSONNAGE = 
 struct 
   type classe = Archer | Guerrier | Magicien
   type genre = Homme | Femme
@@ -11,6 +11,7 @@ struct
     | (Femme, Archer) -> "Archere"
     | (Femme, Guerrier) -> "Guerriere"
     | (Femme, Magicien) -> "Magicienne"
+
       
                  
   let init_perso = { nom = "Maxime"; sexe = Homme; role = Archer; pv = 20; xp = 0 ; niveau = 1} 
@@ -24,4 +25,5 @@ struct
 end;;
 
 print_string("\n");;
-JOUEUR.afficher_infos_perso JOUEUR.init_perso;;
+PERSONNAGE.afficher_infos_perso PERSONNAGE.init_perso;;
+
