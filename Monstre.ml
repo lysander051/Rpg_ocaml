@@ -1,6 +1,6 @@
 module MONSTRE =
 struct 
-  type moustique = int
-  type type_monstre = Golem | Sanglier | Nuee of moustique
-  type monstre = { creature : type_monstre; objet : PERSONNE.objet }
+
+  type type_monstre = Golem | Sanglier | Nuee of int
+  type monstre = { creature : type_monstre; loot : objet ; pv : int}
 end;;
