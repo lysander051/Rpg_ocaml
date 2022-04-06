@@ -14,7 +14,7 @@ struct
     | (Femme, Guerrier) -> "Guerriere"
     | (Femme, Magicien) -> "Magicienne"
   
-  exception Champs_Vide 
+  exception Champs_Vide
 
   type sac = { objet : objet list ; quantite : int}
   let init_perso = fun nom sexe classe role perso -> 
