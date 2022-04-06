@@ -1,4 +1,6 @@
-module PERSONNAGE = 
+open Objet;;
+
+module Personnage = 
 struct 
   type classe = Archer | Guerrier | Magicien
   type genre = Homme | Femme
@@ -12,15 +14,23 @@ struct
     | (Femme, Guerrier) -> "Guerriere"
     | (Femme, Magicien) -> "Magicienne"
   
-    
-    
-  let init_perso = fun nom sexe role -> { nom = nom; sexe = sexe; role = role; pv = 20; xp = 0 ; niveau = 1} 
-  
+  exception Champs_Vide
+
+  type sac = { objet : objet list ; quantite : int}
+  let init_perso = fun nom sexe classe role perso -> 
+    match perso with  
+    | nom -> nom
+    | "H" -> "Homme" 
+    | "F" -> "Femme"
+    | "A" -> "Archer"
+    | "G" -> "Guerrier"
+    | "M" -> "Magicien"
+    | _ -> raise Champs_Vide 
 
       (*let remplir_sac = fun x y z -> { poulet = x; eponge = y; piece = z }  *)
   let etat_perso = fun perso -> perso.nom ^ " | " ^ (classe_genre perso) ^ "  Niveau " ^ string_of_int (perso.niveau) ^ "\n"
-                                ^ " Points de vie  | " ^ string_of_int perso.pv ^ "\n" ^
-                                " Expérience  | " ^ string_of_int perso.xp 
+                                ^ "Points de vie  | " ^ string_of_int perso.pv ^ "\n" ^
+                                "Expérience  | " ^ string_of_int perso.xp 
   let afficher_infos_perso = fun perso -> print_string(etat_perso perso)
 end;;
 
