@@ -1,6 +1,6 @@
 open Personnage;;
 
-exception Lecture_Creation_Perso;;
+
 let rec read_nom = fun () ->
   let () = print_string "Ton nom: " in
   let n = read_line() in
@@ -42,6 +42,7 @@ let rec init_aventure = fun ()->
   let n = read_nom() in
   let g = read_genre() in
   let c = read_classe g in
-  print_string (n ^ g ^c)
+  let perso = Personnage.init_perso n g c in
+  Personnage.afficher_infos_perso perso
 ;;
 

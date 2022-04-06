@@ -16,16 +16,10 @@ struct
   
   exception Champs_Vide
 
-  type sac = { objet : objet list ; quantite : int}
-  let init_perso = fun nom sexe classe role perso -> 
-    match perso with  
-    | nom -> nom
-    | "H" -> "Homme" 
-    | "F" -> "Femme"
-    | "A" -> "Archer"
-    | "G" -> "Guerrier"
-    | "M" -> "Magicien"
-    | _ -> raise Champs_Vide 
+  let init_perso = fun n -> fun g -> fun r ->
+    let gen = if (g="H") then Homme else Femme in
+    let rol = if (r="A") then Archer else if (r="G") then Guerrier else Magicien in
+    {nom = n; sexe = gen; role = rol; pv = 10; xp = 0; niveau = 1}
 
       (*let remplir_sac = fun x y z -> { poulet = x; eponge = y; piece = z }  *)
   let etat_perso = fun perso -> perso.nom ^ " | " ^ (classe_genre perso) ^ "  Niveau " ^ string_of_int (perso.niveau) ^ "\n"
