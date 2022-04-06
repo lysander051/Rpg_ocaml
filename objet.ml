@@ -1,8 +1,4 @@
 module OBJET =
-	struct
-		type type_obj= | Poulet | Eponge | Pièce
-		type quantite=int
-	end;; 
 struct 
 	type type_obj= | Poulet | Eponge | Piece | Rien
 	type quantite=int
