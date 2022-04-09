@@ -1,5 +1,15 @@
+open Objet;;
+open Monstre;;
 open Personnage;;
 
+exception Tue_En_Dormant of Monstre.monstre ;;
+
+let dormir : Personnage.perso -> Personnage.perso = 
+    fun perso -> let chance_monstre = Random.int 100 in
+    if (chance_monstre<5) then let lemonstre = Monstre.init_monstre in raise (Tue_En_Dormant lemonstre)
+    else 
+      let nouv_pv= Personnage.mis_a_jour_pv (perso.pv +4) in 
+      { nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = nouv_pv; xp = perso.xp; niveau = perso.niveau ; sac = perso.sac };;
 
 let rec read_nom = fun () ->
   let () = print_string "Ton nom: " in

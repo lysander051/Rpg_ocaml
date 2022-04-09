@@ -1,16 +1,24 @@
-module OBJET =
+Random.self_init();;
+module Objet =
 struct 
 	type type_obj= | Poulet | Eponge | Piece | Rien
-	type quantite=int
-	type objet={type_obj : type_obj ; qte : quantite}
+	
 
 	let affiche_objet = fun obj ->
-		let s= match obj.type_obj with 
+	match obj with 
 			| Poulet -> "poulet"
 			| Eponge -> "eponge"
 			| Piece -> "piece"
 			| Rien -> "rien"
-		in
-		s ^ if(s !="rien") then (string_of_int obj.qte) else ""
+
+	
+
+		let init_objet = 
+			let n= Random.int 4 in 
+					match n with 
+						| 0 -> Poulet
+						| 1 -> Eponge
+						| 2 -> Piece
+						| _ -> Rien
 
 	end
