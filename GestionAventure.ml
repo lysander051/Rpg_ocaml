@@ -3,6 +3,7 @@ open Monstre;;
 open Personnage;;
 
 exception Tue_En_Dormant of Monstre.monstre ;;
+exception Mort ;;
 
 let dormir : Personnage.perso -> Personnage.perso = 
     fun perso -> let chance_monstre = Random.int 100 in
@@ -78,3 +79,21 @@ let malheureuse_rencontre = fun ()->
     else (Personnage.afficher_infos_perso; aux())
   aux()
   ;;
+let combattre : Personnage.perso -> Monstre.monstre ->Personnage.perso = fun p m ->
+  let couple = if Random.int 2 = 0 then (p,m) else (m,p) in
+  let rec le_combat = fun duo pers monstre -> 
+    match fst duo with 
+      |p when p = pers -> let pv_monstre= monstre.pv - Personnage.frapper p in 
+        if pv_monstre <=0 then let nouv_xp=p.xp+Monstre.xp_gagne monstre in  
+        let couple_niveau = Personnage.changement_niveau p.niveau nouv_xp in
+        {nom : p.nom ; sexe : p.sexe ; role : p.role ; pv : p.pv ; xp :snd couple_niveau  ; niveau : fst couple_niveau  ; sac : p.sac
+        else let nouv_monstre =  {creature :monstre.creature; loot : monstre.loot; pv : pv_monstre}
+      in le_combat (nouv_monstre,p) p nouv_monstre
+
+      |m when m=monstre -> let pv_pers = pers.pv - Monstre.monstre_frapper m in 
+        if pv_pers <=0 then raise Mort
+        else let nouv_pers = {  nom : pers.nom ; sexe : pers.sexe ; role : pers.role ; pv : pv_pers ; xp :pers.xp  ; niveau : pers.niveau  ; sac : pers.sac}
+      in le_combat (nouv_pers,m) nouv_pers m
+    in le_combat couple p m
+    
+  

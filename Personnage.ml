@@ -29,10 +29,10 @@ struct
 
 let mis_a_jour_pv :float -> float = fun nouv_pv -> if nouv_pv > 20. then 20. else nouv_pv 
 
-let chance_de_toucher : int -> int = fun x -> Random.int x
+
 
 let frapper : perso -> int = fun perso ->
-  let chance = chance_de_toucher 100 in  let add_bonus=5*((perso.niveau) -1 ) in
+  let chance = Random.int 100 in  let add_bonus=5*((perso.niveau) -1 ) in
   match perso.role with 
   | Archer when chance <70 + add_bonus -> 4
   | Magicien when chance <50 +add_bonus ->5
@@ -61,6 +61,11 @@ let manger : perso -> (bool *perso) = fun perso ->
     let nouv_sac= retirer_un_objet_dans_le_sac Poulet 1 perso.sac in
   let nouv_pers={ nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = nouv_pv; xp = perso.xp; niveau = perso.niveau ; sac = nouv_sac } 
   in (true,nouv_pers)
+
+let rec changement_niveau :int -> int -> int*int = fun niv xp  ->
+  let niv_1 = (2**niv )*10 in let niv_2= (2**(niv+1))*10 in 
+  if xp >= niv_2 then changement_niveau niv+1 xp
+  else let nouv_xp = xp - niv_1 in (niv,nouv_xp)
 
 end;;
 

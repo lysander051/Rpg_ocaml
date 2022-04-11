@@ -33,6 +33,11 @@ struct
       | Golem -> 4.
       | Sanglier -> 2. 
       | Nuee moustique ->0.5 *. float(moustique)  
+
+    let xp_gagne : monstre -> int = function match m with
+      | Golem -> 8
+      | Sanglier ->4
+      | Nuee _ ->2
 end;;
 
 
