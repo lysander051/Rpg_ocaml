@@ -44,9 +44,17 @@ Ta classe:
   M) Magicienne
 Votre choix: "
   in 
-  let c =read_line()in
+  let c =read_line() in
   if not(c="A" || c="G" || c="M") then (print_string "il faut choisir une classe\n\n"; read_classe(g))
-  else (if c="A" then Personnage.Archer else if c="G" then Personnage.Guerrier else Personnage.Magicien);;
+  else (if c="A" then Personnage.Archer else if c="G" then Personnage.Guerrier else Personnage.Magicien)
+;;
+
+let rec read_action = fun() ->
+  let () = print_string "Que voulez-vous faire\n A) Attaquer \n F) Fuir \n V) Voir l'état de votre perso" in
+  let c = read_line() in
+  if not(c="A" || c="F" || c="V") then (print_string "il faut faire un choix\n\n"; read_action())
+  else return c
+;;
 
 let rec init_aventure = fun ()->
   let n = read_nom() in
@@ -55,3 +63,18 @@ let rec init_aventure = fun ()->
   let perso = Personnage.init_perso n g c in
   Personnage.afficher_infos_perso perso
 ;;
+
+let malheureuse_rencontre = fun ()->
+  let monstre = Monstre.init_monstre in
+  let () = 
+  if monstre.creature = Monstre.Golem then print_string "Le sol tremble sous vos pied, vous êtes destabilisé quand soudain un golem apparait devant vous.\n"
+  else if monstre.creature = Monstre.Sanglier then print_string "Une odeur forte que vous connaissez bien, vous parvient. Un sanglier sort des bois et vous attaque.\n"
+  else print_string "Vous entendez un bourdonnement tout autour de vous. quand soudain une nué de moustique se jette sur vous.\n"
+  in
+  let choix = read_action() in
+  let rec aux = fun () ->
+    if choix = "A" then combattre monstre perso
+    else if choix = "F" then fuir monstre perso
+    else (Personnage.afficher_infos_perso; aux())
+  aux()
+  ;;
