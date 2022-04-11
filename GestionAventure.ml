@@ -4,12 +4,12 @@ open Personnage;;
 
 exception Tue_En_Dormant of Monstre.monstre ;;
 
+
 let dormir : Personnage.perso -> Personnage.perso = 
     fun perso -> let chance_monstre = Random.int 100 in
     if (chance_monstre<5) then let lemonstre = Monstre.init_monstre in raise (Tue_En_Dormant lemonstre)
     else 
-      let nouv_pv= Personnage.mis_a_jour_pv(perso.pv +. 4.) in 
-      { nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = nouv_pv; xp = perso.xp; niveau = perso.niveau ; sac = perso.sac };;
+      Personnage.mis_a_jour_pv 4. perso;;
 
 let rec read_nom = fun () ->
   let () = print_string "Ton nom: " in
@@ -53,18 +53,24 @@ let rec read_action = fun() ->
   let () = print_string "Que voulez-vous faire\n A) Attaquer \n F) Fuir \n V) Voir l'état de votre perso" in
   let c = read_line() in
   if not(c="A" || c="F" || c="V") then (print_string "il faut faire un choix\n\n"; read_action())
-  else return c
+  else c
 ;;
 
 let rec init_aventure = fun ()->
   let n = read_nom() in
   let g = read_genre() in
   let c = read_classe g in
-  let perso = Personnage.init_perso n g c in
-  Personnage.afficher_infos_perso perso
+  Personnage.init_perso n g c
 ;;
 
-let malheureuse_rencontre = fun ()->
+let fuir = fun perso ->
+  let taille = List.length perso.sac in
+  let obj = List.nth perso.sac (Random.int taille) in
+  let () = print_string ("Vous perdez 1 " ^ Objet.affiche_objet obj ) in
+  Personnage.retirer_objet obj 1 perso
+
+
+let malheureuse_rencontre = fun perso->
   let monstre = Monstre.init_monstre in
   let () = 
   if monstre.creature = Monstre.Golem then print_string "Le sol tremble sous vos pied, vous êtes destabilisé quand soudain un golem apparait devant vous.\n"
@@ -73,8 +79,9 @@ let malheureuse_rencontre = fun ()->
   in
   let choix = read_action() in
   let rec aux = fun () ->
-    if choix = "A" then combattre monstre perso
-    else if choix = "F" then fuir monstre perso
+    if choix = "A" then print_string "combat"
+    else if choix = "F" then fuir perso
     else (Personnage.afficher_infos_perso; aux())
+  in
   aux()
   ;;

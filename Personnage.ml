@@ -17,6 +17,7 @@ struct
     | (Femme, Magicien) -> "Magicienne"
   
   exception Champs_Vide
+  exception Personnage_mort
 
   let init_perso = fun n -> fun g -> fun r ->
     {nom = n; sexe = g; role = r; pv = 10.; xp = 0; niveau = 1; sac = [{type_obj = Objet.Eponge; qte = 2};{type_obj = Objet.Poulet; qte = 1};{type_obj = Objet.Piece; qte = 2}] }
@@ -27,7 +28,10 @@ struct
                                 "Expérience  | " ^ string_of_int perso.xp 
   let afficher_infos_perso = fun perso -> print_string(etat_perso perso)
 
-let mis_a_jour_pv :float -> float = fun nouv_pv -> if nouv_pv > 20. then 20. else nouv_pv 
+let mis_a_jour_pv = fun ajoutPv-> fun perso ->
+  if perso.pv +. ajoutPv > 20. then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = 20.; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
+  else if (perso.pv +. ajoutPv > 20. && perso.pv +. ajoutPv <0.) then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv-.ajoutPv; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
+  else raise Personnage_mort
 
 let chance_de_toucher : int -> int = fun x -> Random.int x
 
@@ -46,24 +50,22 @@ let frapper : perso -> int = fun perso ->
   | h::t -> false || aux t
   in aux pers.sac
 
-  let  rec retirer_un_objet_dans_le_sac : Objet.type_obj -> int ->'a list -> 'a list = 
-  fun obj n sac ->
-    match sac with
-    | [] -> []
-    | {type_obj=a; qte=b}::t when a=obj && b=n -> retirer_un_objet_dans_le_sac obj n t
-    | {type_obj=a; qte=b}::t when a=obj && b>n -> {type_obj=a; qte=b-n} ::retirer_un_objet_dans_le_sac obj n t
-    | h::t -> h :: retirer_un_objet_dans_le_sac obj n t
+  let retirer_objet = fun obj n perso ->
+    let rec aux = fun obj n nouveauSac persoSac ->
+      match persoSac with
+      | [] -> {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = nouveauSac }
+      | {type_obj=a; qte=b}::t when a=obj && b=n -> aux obj n (nouveauSac) t
+      | {type_obj=a; qte=b}::t when a=obj && b>n -> aux obj n ({type_obj=a; qte=b-n}::nouveauSac) t 
+      | h::t -> aux obj n (h::nouveauSac) t
+    in aux obj n [] perso.sac
+
 
 let manger : perso -> (bool *perso) = fun perso ->
   if perso.pv>=20. || (not(avoir_un_poulet perso) )  then (false,perso)
   else 
-    let nouv_pv= if(perso.pv+.2.>20.) then 20. else perso.pv+.2. in
-    let nouv_sac= retirer_un_objet_dans_le_sac Poulet 1 perso.sac in
-  let nouv_pers={ nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = nouv_pv; xp = perso.xp; niveau = perso.niveau ; sac = nouv_sac } 
-  in (true,nouv_pers)
+    let perso = mis_a_jour_pv 2. perso in
+    let perso = retirer_objet Objet.Poulet 1 perso in
+    (true,perso)
 
 end;;
-
-print_string("\n");;
-
 
