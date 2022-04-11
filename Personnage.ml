@@ -49,7 +49,6 @@ let frapper : perso -> int = fun perso ->
 
   let  rec retirer_un_objet_dans_le_sac : Objet.type_obj -> int ->'a list -> 'a list = 
   fun obj n sac ->
-
     match sac with
     | [] -> []
     | {type_obj=a; qte=b}::t when a=obj && b=n -> retirer_un_objet_dans_le_sac obj n t
