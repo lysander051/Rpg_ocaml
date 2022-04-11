@@ -5,12 +5,12 @@ open Personnage;;
 exception Tue_En_Dormant of Monstre.monstre ;;
 exception Mort ;;
 
+
 let dormir : Personnage.perso -> Personnage.perso = 
     fun perso -> let chance_monstre = Random.int 100 in
     if (chance_monstre<5) then let lemonstre = Monstre.init_monstre in raise (Tue_En_Dormant lemonstre)
     else 
-      let nouv_pv= Personnage.mis_a_jour_pv(perso.pv +. 4.) in 
-      { nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = nouv_pv; xp = perso.xp; niveau = perso.niveau ; sac = perso.sac };;
+      Personnage.mis_a_jour_pv 4. perso;;
 
 let rec read_nom = fun () ->
   let () = print_string "Ton nom: " in
@@ -54,18 +54,24 @@ let rec read_action = fun() ->
   let () = print_string "Que voulez-vous faire\n A) Attaquer \n F) Fuir \n V) Voir l'état de votre perso" in
   let c = read_line() in
   if not(c="A" || c="F" || c="V") then (print_string "il faut faire un choix\n\n"; read_action())
-  else return c
+  else c
 ;;
 
 let rec init_aventure = fun ()->
   let n = read_nom() in
   let g = read_genre() in
   let c = read_classe g in
-  let perso = Personnage.init_perso n g c in
-  Personnage.afficher_infos_perso perso
+  Personnage.init_perso n g c
 ;;
 
-let malheureuse_rencontre = fun ()->
+let fuir : Personnage.perso -> Personnage.perso = fun perso ->
+  let taille = List.length(perso.sac) in
+  let obj = List.nth perso.sac (Random.int taille) in
+  let () = print_string ("Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj ) in
+  Personnage.retirer_objet obj.type_obj 1 perso
+
+
+let malheureuse_rencontre = fun perso->
   let monstre = Monstre.init_monstre in
   let () = 
   if monstre.creature = Monstre.Golem then print_string "Le sol tremble sous vos pied, vous êtes destabilisé quand soudain un golem apparait devant vous.\n"
@@ -73,11 +79,12 @@ let malheureuse_rencontre = fun ()->
   else print_string "Vous entendez un bourdonnement tout autour de vous. quand soudain une nué de moustique se jette sur vous.\n"
   in
   let choix = read_action() in
-  let rec aux = fun () ->
-    if choix = "A" then combattre monstre perso
-    else if choix = "F" then fuir monstre perso
-    else (Personnage.afficher_infos_perso; aux())
-  aux()
+  let rec aux = fun perso ->
+    if choix = "A" then fuir perso
+    else if choix = "F" then fuir perso
+    else (Personnage.afficher_infos_perso perso; aux perso)
+  in
+  aux perso
   ;;
 let combattre : Personnage.perso -> Monstre.monstre ->Personnage.perso = fun p m ->
   let couple = if Random.int 2 = 0 then (p,m) else (m,p) in
