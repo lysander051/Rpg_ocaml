@@ -29,15 +29,27 @@ struct
     in s ^ "  obj =  " ^ (Objet.affiche_objet monstre.loot) ^ "  pv =  " ^ (string_of_int monstre.pv) ^"\n"
 
     let monstre_frapper : monstre -> float =fun monstre ->
+      let chance = Random.int 100 in 
+      if chance < 50 then 0.
+      else
      match monstre.creature with
       | Golem -> 4.
       | Sanglier -> 2. 
       | Nuee moustique ->0.5 *. float(moustique)  
 
-    let xp_gagne : monstre -> int = function match m with
+    let xp_gagne : monstre -> int = fun m-> match m.creature with
       | Golem -> 8
       | Sanglier ->4
       | Nuee _ ->2
+
+      let message_combat : monstre -> float -> string = fun m degat ->
+        if degat= 0. then
+            "L'ennemi attaque mais vous manque"
+        else
+        match m.creature with 
+        |Golem -> "Le golem vous attaque et vous perdez "^ (string_of_float degat) ^ "points"
+        |Sanglier -> "Le sanglier vous attaque et vous perdez "^ (string_of_float degat) ^ "points"
+        | Nuee _ -> "La nuée de moustique vous attaque et vous perdez "^ (string_of_float degat) ^ "points"
 end;;
 
 

@@ -2,6 +2,7 @@ open Objet;;
 
 module Personnage = 
 struct 
+exception Personnage_mort
   type classe = Archer | Guerrier | Magicien
   type genre = Homme | Femme
   type objet={type_obj : Objet.type_obj ; qte : int}
@@ -68,10 +69,10 @@ let manger : perso -> (bool *perso) = fun perso ->
     let perso = retirer_objet Objet.Poulet 1 perso in
     (true,perso)
 
-let rec changement_niveau :int -> int -> int*int = fun niv xp  ->
-  let niv_1 = (2**niv )*10 in let niv_2= (2**(niv+1))*10 in 
-  if xp >= niv_2 then changement_niveau niv+1 xp
-  else let nouv_xp = xp - niv_1 in (niv,nouv_xp)
+let rec changement_niveau :int -> float -> int*int = fun niv xp  ->
+  let niv_1 = (2.**float(niv))*.10. in let niv_2= (2.**float(niv+1))*.10. in 
+  if xp >= niv_2 then changement_niveau (niv+1) xp
+  else let nouv_xp = xp -. niv_1 in (niv,(int_of_float nouv_xp))
 
 end;;
 
