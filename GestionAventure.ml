@@ -8,7 +8,7 @@ let dormir : Personnage.perso -> Personnage.perso =
     fun perso -> let chance_monstre = Random.int 100 in
     if (chance_monstre<5) then let lemonstre = Monstre.init_monstre in raise (Tue_En_Dormant lemonstre)
     else 
-      let nouv_pv= Personnage.mis_a_jour_pv (perso.pv +4) in 
+      let nouv_pv= Personnage.mis_a_jour_pv(perso.pv +. 4.) in 
       { nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = nouv_pv; xp = perso.xp; niveau = perso.niveau ; sac = perso.sac };;
 
 let rec read_nom = fun () ->
@@ -25,11 +25,11 @@ Ton genre:
 Votre choix: " in
 let g=read_line() in
 if not(g="F" || g="H") then (print_string "tu DOIS avoir un genre\n\n"; read_genre())
-else g;;
+else (if g="F" then Personnage.Femme else Personnage.Homme);;
 
 let rec read_classe = fun g ->
   let () = 
-  if g = "H" then 
+  if g = Personnage.Homme then 
     print_string "
 Ta classe: 
   A) Archer
@@ -46,7 +46,7 @@ Votre choix: "
   in 
   let c =read_line()in
   if not(c="A" || c="G" || c="M") then (print_string "il faut choisir une classe\n\n"; read_classe(g))
-  else c;;
+  else (if c="A" then Personnage.Archer else if c="G" then Personnage.Guerrier else Personnage.Magicien);;
 
 let rec init_aventure = fun ()->
   let n = read_nom() in
