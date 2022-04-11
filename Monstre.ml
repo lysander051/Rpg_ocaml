@@ -50,6 +50,15 @@ struct
         |Golem -> "Le golem vous attaque et vous perdez "^ (string_of_float degat) ^ "points"
         |Sanglier -> "Le sanglier vous attaque et vous perdez "^ (string_of_float degat) ^ "points"
         | Nuee _ -> "La nuée de moustique vous attaque et vous perdez "^ (string_of_float degat) ^ "points"
+        
+        let nom_monstre = fun m ->
+          match m.creature with
+          |Golem -> "Le golem"
+        |Sanglier -> "Le sanglier"
+        | Nuee _ -> "La nuée de moustique"
+
+       let monstre_vaincu : monstre -> unit = fun m -> print_string "Vous avez survécu à l'attaque du monstre"
+
 end;;
 
 
