@@ -59,6 +59,7 @@ let frapper : perso -> int = fun perso ->
       | h::t -> aux obj n (h::nouveauSac) t
     in aux obj n [] perso.sac
 
+  
 
 let manger : perso -> (bool *perso) = fun perso ->
   if perso.pv>=20. || (not(avoir_un_poulet perso) )  then (false,perso)

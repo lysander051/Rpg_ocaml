@@ -6,3 +6,4 @@ Pour ce faire ton but est d'être la personne la plus préstigieuse au monde.
 Au faite qui es-tu aventurier?\n\n\n";;
 
 let personnage = GestionAventure.init_aventure();;
+GestionAventure.malheureuse_rencontre personnage;;

@@ -63,11 +63,11 @@ let rec init_aventure = fun ()->
   Personnage.init_perso n g c
 ;;
 
-let fuir = fun perso ->
-  let taille = List.length perso.sac in
+let fuir : Personnage.perso -> Personnage.perso = fun perso ->
+  let taille = List.length(perso.sac) in
   let obj = List.nth perso.sac (Random.int taille) in
-  let () = print_string ("Vous perdez 1 " ^ Objet.affiche_objet obj ) in
-  Personnage.retirer_objet obj 1 perso
+  let () = print_string ("Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj ) in
+  Personnage.retirer_objet obj.type_obj 1 perso
 
 
 let malheureuse_rencontre = fun perso->
@@ -78,10 +78,10 @@ let malheureuse_rencontre = fun perso->
   else print_string "Vous entendez un bourdonnement tout autour de vous. quand soudain une nué de moustique se jette sur vous.\n"
   in
   let choix = read_action() in
-  let rec aux = fun () ->
-    if choix = "A" then print_string "combat"
+  let rec aux = fun perso ->
+    if choix = "A" then fuir perso
     else if choix = "F" then fuir perso
-    else (Personnage.afficher_infos_perso; aux())
+    else (Personnage.afficher_infos_perso perso; aux perso)
   in
-  aux()
+  aux perso
   ;;
