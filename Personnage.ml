@@ -22,11 +22,38 @@ struct
 
   let init_perso = fun n -> fun g -> fun r ->
     {nom = n; sexe = g; role = r; pv = 20.; xp = 0; niveau = 1; sac = [{type_obj = Objet.Eponge; qte = 2};{type_obj = Objet.Poulet; qte = 1};{type_obj = Objet.Piece; qte = 2}] }
-
-      (*let remplir_sac = fun x y z -> { poulet = x; eponge = y; piece = z }  *)
-  let etat_perso = fun perso -> perso.nom ^ " | " ^ (classe_genre perso) ^ "  Niveau " ^ string_of_int (perso.niveau) ^ "\n"
-                                ^ "Points de vie  | " ^ string_of_float perso.pv ^ "\n" ^
-                                "Expérience  | " ^ string_of_int perso.xp 
+  
+  
+  let rec iterate : (int * ('a->'a) * 'a) -> 'a =
+      fun (count, f, initial_value) ->
+        if count <= 0
+        then initial_value
+        else iterate (count-1, f, f initial_value)
+  let ligne = fun perso -> String.length ("| " ^ perso.nom ^ " | " ^ (classe_genre perso) 
+                                            ^ "  Niveau " ^ string_of_int (perso.niveau) ^ "\n")   
+  let repeat_string = fun (s,ligne) -> iterate (ligne+1,( fun p -> p ^ s) , "")
+  
+  let affichage_ligne = fun chaine -> "+" ^ (repeat_string ("-", chaine)) ^ "+"
+  let _enclosing = fun chaine -> "| " ^ chaine ^ " |"
+  let end_line = fun chaine -> chaine ^ "\n"
+    
+  let frame_string = fun chaine -> 
+      let longueur = String.length (_enclosing(chaine)) in 
+      let affichage =  end_line ( affichage_ligne (longueur-3))  in
+      let titre = end_line ( _enclosing chaine) in
+      affichage ^ titre ^ affichage
+  
+  let frame_string_for_xp = fun chaine -> 
+      let longueur = String.length (_enclosing(chaine)) in 
+      let affichage =  end_line ( affichage_ligne (longueur-4))  in
+      let titre = end_line ( _enclosing chaine) in
+      affichage ^ titre ^ affichage
+    
+    
+  let etat_perso = fun perso -> 
+      frame_string(perso.nom ^ " | " ^ (classe_genre perso) ^ "  Niveau " ^ string_of_int (perso.niveau)) ^ 
+      frame_string("Points de vie  | " ^ string_of_float perso.pv) ^ 
+      frame_string_for_xp("Expérience   | " ^ string_of_int perso.xp) 
 
   let afficher_infos_perso = fun perso -> print_string(etat_perso perso)
 
