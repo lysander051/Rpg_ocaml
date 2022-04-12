@@ -1,4 +1,5 @@
 open Objet;;
+open Monstre;;
 
 module Personnage = 
 struct 
@@ -19,6 +20,7 @@ struct
   
   exception Champs_Vide
   exception Personnage_mort
+  exception Tue_En_Dormant of Monstre.monstre 
 
   let init_perso = fun n -> fun g -> fun r ->
     {nom = n; sexe = g; role = r; pv = 20.; xp = 0; niveau = 1; sac = [{type_obj = Objet.Eponge; qte = 2};{type_obj = Objet.Poulet; qte = 1};{type_obj = Objet.Piece; qte = 2}] }
@@ -33,7 +35,7 @@ struct
   let mis_a_jour_pv = fun ajoutPv-> fun perso ->
     if perso.pv +. ajoutPv > 20. then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = 20.; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
     else 
-      if not(perso.pv +. ajoutPv > 20. && perso.pv +. ajoutPv <0.) then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv-.ajoutPv; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
+      if perso.pv +. ajoutPv < 20. && perso.pv +. ajoutPv > 0. then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv-.ajoutPv; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
       else raise Personnage_mort
 
   let frapper : perso -> int = fun perso ->
@@ -45,11 +47,12 @@ struct
     | _ -> 0
 
   let avoir_un_poulet: perso -> bool = fun pers ->
-    let rec aux = fun sac -> match sac with
-  | [] -> false
-  | {type_obj=a; qte=b}::_ when a=Poulet && b>0 -> true
-  | h::t -> false || aux t
-  in aux pers.sac
+    let rec aux = fun sac -> 
+      match sac with
+      | [] -> false
+      | {type_obj=a; qte=b}::_ when a=Poulet && b>0 -> true
+      | h::t -> false || aux t
+    in aux pers.sac
 
   let retirer_objet = fun obj n perso ->
     let rec aux = fun obj n nouveauSac persoSac ->
@@ -66,6 +69,12 @@ struct
       let perso = mis_a_jour_pv 2. perso in
       let perso = retirer_objet Objet.Poulet 1 perso in
       (true,perso)
+
+  let dormir : perso -> perso = 
+    fun perso -> let chance_monstre = Random.int 100 in
+    if (chance_monstre<5) then let lemonstre = Monstre.init_monstre in ((print_string ("Malheureusement, un " ^ Monstre.nom_monstre lemonstre ^ " vous tue dans la nuit\n")); raise (Tue_En_Dormant lemonstre))
+    else 
+      mis_a_jour_pv 4. perso
 
   let rec changement_niveau :int -> float -> int*int = fun niv xp  ->
     let niv_1 = (2.**float(niv))*.10. in let niv_2= (2.**float(niv+1))*.10. in 

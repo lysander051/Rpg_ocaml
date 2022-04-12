@@ -11,8 +11,6 @@ struct
       | 0 -> 0
       | _ -> (Random.int n) +  d (x-1)  n
 
-  
-   
   let init_monstre = 
     let x = Random.int 3 in 
     match x with 
