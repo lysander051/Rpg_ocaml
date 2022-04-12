@@ -3,7 +3,6 @@ open Monstre;;
 open Personnage;;
 
 exception Tue_En_Dormant of Monstre.monstre ;;
-exception Mort ;;
 
 
 let dormir : Personnage.perso -> Personnage.perso = 
@@ -11,7 +10,6 @@ let dormir : Personnage.perso -> Personnage.perso =
     if (chance_monstre<5) then let lemonstre = Monstre.init_monstre in raise (Tue_En_Dormant lemonstre)
     else 
       Personnage.mis_a_jour_pv 4. perso;;
-
 
 let rec read_nom = fun () ->
   let () = print_string "Ton nom: " in
@@ -53,11 +51,11 @@ Votre choix: "
 
 let rec read_action = fun() ->
   let () = print_string "
-  Que voulez-vous faire
-    A) Attaquer  
-    F) Fuir 
-    V) Voir l'état de votre perso
-  Votre choix: " in
+Que voulez-vous faire
+  A) Attaquer  
+  F) Fuir 
+  V) Voir l'état de votre perso
+Votre choix: " in
   let c = read_line() in
   if not(c="A" || c="F" || c="V") then (print_string "il faut faire un choix\n\n"; read_action())
   else c
@@ -74,44 +72,36 @@ let fuir : Personnage.perso -> Personnage.perso = fun perso ->
   let taille = List.length(perso.sac) in
   let obj = List.nth perso.sac (Random.int taille) in
   let () = print_string ("Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj ) in
-  Personnage.retirer_objet obj.type_obj 1 perso;;
+  Personnage.retirer_objet obj.type_obj 1 perso
+;;
 
-  let combattre : Personnage.perso -> Monstre.monstre -> Personnage.perso = fun pers monstre ->
- 
-    let rec le_combat :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = fun attaquant p m -> 
-      match attaquant  with 
-        |0 -> let pv_monstre= m.pv - Personnage.frapper p in 
-          if (pv_monstre <=0 ) then 
-            let nouv_xp= p.xp +( Monstre.xp_gagne monstre) in  Monstre.monstre_vaincu m ;
-          Personnage.changement_niveau p nouv_xp
-          else let nouv_monstre : Monstre.monstre = {creature = monstre.creature; loot = monstre.loot; pv = pv_monstre}
-          in le_combat 1 p nouv_monstre
-  
-        |_-> let degat = (Monstre.monstre_frapper m) in (print_string (Monstre.message_combat m degat)) ; let nouv_pers=(Personnage.mis_a_jour_pv (-. degat ) p) 
-          in le_combat 0 nouv_pers m
-  
-      in le_combat (Random.int 2) pers monstre;;
-  
-     
-      
-    
-  
+let combattre : Personnage.perso -> Monstre.monstre -> Personnage.perso = fun pers monstre ->
+  let rec le_combat :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = fun attaquant p m -> 
+    match attaquant  with 
+      |0 -> let pv_monstre= m.pv - Personnage.frapper p in 
+        if (pv_monstre <=0 ) then 
+          let nouv_xp= p.xp +( Monstre.xp_gagne monstre) in  Monstre.monstre_vaincu m ;
+        Personnage.changement_niveau p nouv_xp
+        else let nouv_monstre : Monstre.monstre = {creature = monstre.creature; loot = monstre.loot; pv = pv_monstre}
+        in le_combat 1 p nouv_monstre
+      |_-> let degat = (Monstre.monstre_frapper m) in (print_string (Monstre.message_combat m degat)) ; let nouv_pers=(Personnage.mis_a_jour_pv (-. degat ) p) 
+        in le_combat 0 nouv_pers m
+     in le_combat (Random.int 2) pers monstre
+;; 
 
-
-  let malheureuse_rencontre = fun perso->
-    let monstre = Monstre.init_monstre in
-    let () = 
-    if monstre.creature = Monstre.Golem then print_string "Le sol tremble sous vos pied, vous êtes destabilisé quand soudain un golem apparait devant vous.\n"
-    else if monstre.creature = Monstre.Sanglier then print_string "Une odeur forte que vous connaissez bien, vous parvient. Un sanglier sort des bois et vous attaque.\n"
-    else print_string "Vous entendez un bourdonnement tout autour de vous. quand soudain une nué de moustique se jette sur vous.\n"
-    in
-   
-    let rec aux = fun perso ->
-      let choix = read_action() in
-      if choix = "A" then (combattre perso monstre)
-      else if choix = "F" then fuir perso
-      else (Personnage.afficher_infos_perso perso; aux perso)
-    in
-    aux perso
-    ;;
+let malheureuse_rencontre = fun perso->
+  let monstre = Monstre.init_monstre in
+  let () = 
+  if monstre.creature = Monstre.Golem then print_string "Le sol tremble sous vos pied, vous êtes destabilisé quand soudain un golem apparait devant vous.\n"
+  else if monstre.creature = Monstre.Sanglier then print_string "Une odeur forte que vous connaissez bien, vous parvient. Un sanglier sort des bois et vous attaque.\n"
+  else print_string "Vous entendez un bourdonnement tout autour de vous. quand soudain une nué de moustique se jette sur vous.\n"
+  in   
+  let rec aux = fun perso ->
+    let choix = read_action() in
+    if choix = "A" then (combattre perso monstre)
+    else if choix = "F" then fuir perso
+    else (Personnage.afficher_infos_perso perso; aux perso)
+  in
+  aux perso
+;;
 

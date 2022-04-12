@@ -27,23 +27,22 @@ struct
   let etat_perso = fun perso -> perso.nom ^ " | " ^ (classe_genre perso) ^ "  Niveau " ^ string_of_int (perso.niveau) ^ "\n"
                                 ^ "Points de vie  | " ^ string_of_float perso.pv ^ "\n" ^
                                 "Expérience  | " ^ string_of_int perso.xp 
+
   let afficher_infos_perso = fun perso -> print_string(etat_perso perso)
 
-let mis_a_jour_pv = fun ajoutPv-> fun perso ->
-  if perso.pv +. ajoutPv > 20. then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = 20.; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
-  else 
-    if not(perso.pv +. ajoutPv > 20. && perso.pv +. ajoutPv <0.) then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv-.ajoutPv; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
-    else raise Personnage_mort
+  let mis_a_jour_pv = fun ajoutPv-> fun perso ->
+    if perso.pv +. ajoutPv > 20. then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = 20.; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
+    else 
+      if not(perso.pv +. ajoutPv > 20. && perso.pv +. ajoutPv <0.) then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv-.ajoutPv; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
+      else raise Personnage_mort
 
-
-
-let frapper : perso -> int = fun perso ->
-  let chance = Random.int 100 in  let add_bonus=5*((perso.niveau) -1 ) in
-  match perso.role with 
-  | Archer when chance <70 + add_bonus -> 4
-  | Magicien when chance <50 +add_bonus ->5
-  | Guerrier when chance < 30 + add_bonus ->10
-  | _ -> 0
+  let frapper : perso -> int = fun perso ->
+    let chance = Random.int 100 in  let add_bonus=5*((perso.niveau) -1 ) in
+    match perso.role with 
+    | Archer when chance <70 + add_bonus -> 4
+    | Magicien when chance <50 +add_bonus ->5
+    | Guerrier when chance < 30 + add_bonus ->10
+    | _ -> 0
 
   let avoir_un_poulet: perso -> bool = fun pers ->
     let rec aux = fun sac -> match sac with
@@ -61,30 +60,26 @@ let frapper : perso -> int = fun perso ->
       | h::t -> aux obj n (h::nouveauSac) t
     in aux obj n [] perso.sac
 
-  
+  let manger : perso -> (bool *perso) = fun perso ->
+    if perso.pv>=20. || (not(avoir_un_poulet perso) )  then (false,perso)
+    else 
+      let perso = mis_a_jour_pv 2. perso in
+      let perso = retirer_objet Objet.Poulet 1 perso in
+      (true,perso)
 
-let manger : perso -> (bool *perso) = fun perso ->
-  if perso.pv>=20. || (not(avoir_un_poulet perso) )  then (false,perso)
-  else 
-    let perso = mis_a_jour_pv 2. perso in
-    let perso = retirer_objet Objet.Poulet 1 perso in
-    (true,perso)
-
-let rec changement_niveau :int -> float -> int*int = fun niv xp  ->
-  let niv_1 = (2.**float(niv))*.10. in let niv_2= (2.**float(niv+1))*.10. in 
-  if xp >= niv_2 then changement_niveau (niv+1) xp
-  else let nouv_xp = xp -. niv_1 in (niv,(int_of_float nouv_xp))
-
-let changement_niveau : perso -> int -> perso = fun p pt_xp ->
-  let rec aux : int -> int -> perso = fun niv xp  ->
+  let rec changement_niveau :int -> float -> int*int = fun niv xp  ->
     let niv_1 = (2.**float(niv))*.10. in let niv_2= (2.**float(niv+1))*.10. in 
-    if (float)xp >= niv_2 then aux (niv+1) xp 
-    else let nouv_xp =xp - (int_of_float niv_1) in 
-   ( if niv != p.niveau then  (print_string ("Vous avez atteint le niveau " ^ (string_of_int niv)))) ;
-  {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = nouv_xp; niveau =niv ; sac = p.sac }
-  in aux p.niveau pt_xp
+    if xp >= niv_2 then changement_niveau (niv+1) xp
+    else let nouv_xp = xp -. niv_1 in (niv,(int_of_float nouv_xp))
 
-  
+  let changement_niveau : perso -> int -> perso = fun p pt_xp ->
+    let rec aux : int -> int -> perso = fun niv xp  ->
+      let niv_1 = (2.**float(niv))*.10. in let niv_2= (2.**float(niv+1))*.10. in 
+      if (float)xp >= niv_2 then aux (niv+1) xp 
+      else let nouv_xp =xp - (int_of_float niv_1) in 
+        ( if niv != p.niveau then  (print_string ("Vous avez atteint le niveau " ^ (string_of_int niv)))) ;
+        {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = nouv_xp; niveau =niv ; sac = p.sac }
+      in aux p.niveau pt_xp
 
 end;;
 
