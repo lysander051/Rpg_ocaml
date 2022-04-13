@@ -93,9 +93,7 @@ struct
   let manger : perso -> (bool *perso) = fun perso ->
     if perso.pv>=20. || (not(avoir_un_poulet perso) )  then (false,perso)
     else 
-      let perso = mis_a_jour_pv 2. perso in
-      let perso = retirer_objet Objet.Poulet 1 perso in
-      (true,perso)
+      (true, retirer_objet Objet.Poulet 1 (mis_a_jour_pv 2. perso))
 
   let dormir : perso -> perso = 
     fun perso -> let chance_monstre = Random.int 100 in
