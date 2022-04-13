@@ -29,8 +29,7 @@ struct
   let nb_degats = fun perso -> match perso with
     | Archer -> "04"
     | Guerrier -> "10"
-    | Magicien -> "05" 
-      
+    | Magicien -> "05"     
       
   let chance_toucher = fun perso niveau -> match (perso.role, perso.niveau) with
     | (Archer, n) -> if n > 2 then string_of_int(70+5*perso.niveau) else "70"
@@ -38,8 +37,8 @@ struct
     | (Magicien, n) -> if n > 2 then string_of_int(50+5*perso.niveau) else "50"
       
   let lvl_sup = fun perso -> if ((2.**float(perso.niveau))*.10.)-.float(perso.xp) > 100. || ((2.**float(perso.niveau))*.10.)-.float(perso.xp) < 0.
-      then "Niveau supérieur   : " ^ string_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp)) ^ "    |"
-      else "Niveau supérieur   : " ^ string_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp)) ^ "     |"
+      then "Niveau supérieur   : " ^ string_of_int(int_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp))) ^ "     |"
+      else "Niveau supérieur   : " ^ string_of_int(int_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp))) ^ "      |"
     
          
   let rec presence_poulet = fun sac -> match sac with
@@ -146,9 +145,8 @@ struct
     in aux obj n [] perso.sac
 
   let manger : perso -> (bool *perso) = fun perso ->
-    if perso.pv>=20. || (not(avoir_un_poulet perso) )  then (false,perso)
-    else 
-      (true, retirer_objet Objet.Poulet 1 (mis_a_jour_pv 2. perso))
+    if (not(avoir_un_poulet perso) )  then (false,perso)
+    else (true, retirer_objet Objet.Poulet 1 (mis_a_jour_pv 2. perso))
 
   let dormir : perso -> perso = 
     fun perso -> let chance_monstre = Random.int 100 in

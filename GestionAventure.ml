@@ -124,7 +124,7 @@ let rec hubAventure = fun perso ->
   else if c="M" then 
     (let mange = Personnage.manger perso in 
     if (fst mange) then (print_string (delimiteur() ^ ">Vous mangez un peu avant de reprendre votre aventure.\n"); hubAventure (snd mange))
-    else (print_string (delimiteur() ^ ">Vous n'avez rien à manger\n"); hubAventure (snd mange)))
+    else (print_string (delimiteur() ^ ">Vous n'avez pas à manger\n"); hubAventure (snd mange)))
   else if c="V" then (print_string (delimiteur()); Personnage.afficher_infos_perso perso; hubAventure perso)
   else raise Quitte_le_jeu
 ;;
