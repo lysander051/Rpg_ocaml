@@ -45,22 +45,22 @@ struct
   let rec presence_poulet = fun sac -> match sac with
     | [] -> "Pas de poulets"
     | hd::tl when hd.type_obj = Poulet -> if hd.qte = 1 
-        then string_of_int(hd.qte) ^ " Poulet" ^ " "
-        else string_of_int(hd.qte) ^ " Poulets"
+        then "Poulet  :  " ^ string_of_int(hd.qte)
+        else "Poulets :  " ^ string_of_int(hd.qte)
     | _::tl -> presence_poulet tl
   
   let rec presence_eponge = fun sac -> match sac with
     | [] -> "Pas d'éponges"
     | hd::tl when hd.type_obj = Eponge -> if hd.qte = 1 
-        then string_of_int(hd.qte) ^ " Eponge" 
-        else string_of_int(hd.qte) ^ " Eponges"
+        then "Eponge  :  " ^ string_of_int(hd.qte)
+        else "Eponges :  " ^ string_of_int(hd.qte)
     | _::tl -> presence_eponge tl
                  
   let rec presence_piece = fun sac -> match sac with
     | [] -> "Pas de pieces"
     | hd::tl when hd.type_obj = Piece -> if hd.qte = 1 
-        then string_of_int(hd.qte) ^ " Pièce"
-        else string_of_int(hd.qte) ^ " Pièces"
+        then "Pièce   :  " ^ string_of_int(hd.qte)
+        else "Pièces  :  " ^ string_of_int(hd.qte)
     | _::tl -> presence_piece tl
   
     
