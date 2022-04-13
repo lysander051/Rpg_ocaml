@@ -26,36 +26,86 @@ struct
     {nom = n; sexe = g; role = r; pv = 20.; xp = 0; niveau = 1; sac = [{type_obj = Objet.Eponge; qte = 2};{type_obj = Objet.Poulet; qte = 1};{type_obj = Objet.Piece; qte = 2}] }
   
   
+  let nb_degats = fun perso -> match perso with
+    | Archer -> "04"
+    | Guerrier -> "10"
+    | Magicien -> "05" 
+      
+      
+  let chance_toucher = fun perso niveau -> match (perso.role, perso.niveau) with
+    | (Archer, n) -> if n > 2 then string_of_int(70+5*perso.niveau) else "70"
+    | (Guerrier, n) -> if n > 2 then string_of_int(30+5*perso.niveau) else "30" 
+    | (Magicien, n) -> if n > 2 then string_of_int(50+5*perso.niveau) else "50"
+      
+  let lvl_sup = fun perso -> if ((2.**float(perso.niveau))*.10.)-.float(perso.xp) > 100.
+      then "Niveau supérieur :  " ^ string_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp)) ^ "     |"
+      else "Niveau supérieur :   " ^ string_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp)) ^ "     |"
+    
+         
+  let rec presence_poulet = fun sac -> match sac with
+    | [] -> "Pas de poulets"
+    | hd::tl when hd.type_obj = Poulet -> if hd.qte = 1 
+        then string_of_int(hd.qte) ^ " Poulet" ^ " "
+        else string_of_int(hd.qte) ^ " Poulets"
+    | _::tl -> presence_poulet tl
+  
+  let rec presence_eponge = fun sac -> match sac with
+    | [] -> "Pas d'éponges"
+    | hd::tl when hd.type_obj = Eponge -> if hd.qte = 1 
+        then string_of_int(hd.qte) ^ " Eponge" 
+        else string_of_int(hd.qte) ^ " Eponges"
+    | _::tl -> presence_eponge tl
+                 
+  let rec presence_piece = fun sac -> match sac with
+    | [] -> "Pas de pieces"
+    | hd::tl when hd.type_obj = Piece -> if hd.qte = 1 
+        then string_of_int(hd.qte) ^ " Pièce"
+        else string_of_int(hd.qte) ^ " Pièces"
+    | _::tl -> presence_piece tl
+  
+    
+    
   let rec iterate : (int * ('a->'a) * 'a) -> 'a =
-      fun (count, f, initial_value) ->
-        if count <= 0
-        then initial_value
-        else iterate (count-1, f, f initial_value)
+    fun (count, f, initial_value) ->
+      if count <= 0
+      then initial_value
+      else iterate (count-1, f, f initial_value)
   let ligne = fun perso -> String.length ("| " ^ perso.nom ^ " | " ^ (classe_genre perso) 
-                                            ^ "  Niveau " ^ string_of_int (perso.niveau) ^ "\n")   
+                                          ^ "  Niveau " ^ string_of_int (perso.niveau) ^ "\n")   
   let repeat_string = fun (s,ligne) -> iterate (ligne+1,( fun p -> p ^ s) , "")
   
   let affichage_ligne = fun chaine -> "+" ^ (repeat_string ("-", chaine)) ^ "+"
-  let _enclosing = fun chaine -> "| " ^ chaine ^ " |"
-  let end_line = fun chaine -> chaine ^ "\n"
-    
-  let frame_string = fun chaine -> 
-      let longueur = String.length (_enclosing(chaine)) in 
-      let affichage =  end_line ( affichage_ligne (longueur-3))  in
-      let titre = end_line ( _enclosing chaine) in
-      affichage ^ titre ^ affichage
-  
-  let frame_string_for_xp = fun chaine -> 
-      let longueur = String.length (_enclosing(chaine)) in 
-      let affichage =  end_line ( affichage_ligne (longueur-4))  in
-      let titre = end_line ( _enclosing chaine) in
-      affichage ^ titre ^ affichage
-    
+  let affichage_fiche_perso = fun chaine -> chaine 
+  let affichage_attr_perso = fun chaine -> chaine
+  let _enclosing = fun chaine -> "| " ^ chaine 
+  let fermeture = fun chaine -> repeat_string(" ", String.length("+----------------- Fiche de personnage --------------+")-String.length(chaine)-4) ^ "|"
+  let fermer_tableau = fun chaine -> repeat_string(" ", String.length("+----------------- Fiche de personnage --------------+")-String.length(chaine)-3) ^ "|"
     
   let etat_perso = fun perso -> 
-      frame_string(perso.nom ^ " | " ^ (classe_genre perso) ^ "  Niveau " ^ string_of_int (perso.niveau)) ^ 
-      frame_string("Points de vie  | " ^ string_of_float perso.pv) ^ 
-      frame_string_for_xp("Expérience   | " ^ string_of_int perso.xp) 
+    affichage_fiche_perso ("+----------------- Fiche de personnage --------------+") ^ "\n" ^ 
+    _enclosing("Nom : " ^ perso.nom) ^ (fermeture ("Nom : " ^ perso.nom)) ^
+    repeat_string (" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2+1+String.length(perso.nom) - (String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))- String.length(perso.nom))) ^ "\n" ^ 
+    _enclosing("Niveau " ^ string_of_int (perso.niveau) ^ "        Classe : " ^ (classe_genre perso)) ^ (fermeture ("Niveau " ^ string_of_int (perso.niveau) ^ "        Classe : " ^ (classe_genre perso))) ^
+    repeat_string (" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))-5) ^ "\n" ^ 
+    
+    
+    affichage_attr_perso("+--------- Attribut ------------------ Sac ----------+") ^ "\n" ^ 
+    _enclosing("Point de vie :       " ^ (string_of_float perso.pv) ^ "/20." ^ " |") ^ (presence_poulet perso.sac) ^ " " ^ fermeture("Point de vie :       " ^ (string_of_float perso.pv) ^ "/20." ^ " | " ^ (presence_poulet perso.sac)) ^ 
+    
+    repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Point de vie : " ^ (string_of_float perso.pv))-2) ^ "\n" ^
+    _enclosing("Dégats :             " ^ (nb_degats (perso.role) ^ "      |")) ^ (presence_piece perso.sac) ^ fermer_tableau("Dégats :             " ^ (nb_degats (perso.role) ^ "     |") ^ (presence_piece perso.sac)) ^
+    
+    repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Dégats :            " ^ (nb_degats (perso.role)))-2) ^ "\n" ^
+    _enclosing("Chances de toucher : " ^ (chance_toucher perso perso.niveau) ^ "      |") ^ (presence_eponge perso.sac) ^ fermeture("Chances de toucher : " ^ (chance_toucher perso perso.niveau) ^ "      |" ^ (presence_eponge perso.sac)) ^
+    
+    repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Chances de toucher : " ^ (chance_toucher perso perso.niveau))-2) ^ "\n" ^
+    _enclosing("Expérience :          " ^ string_of_int perso.xp ^ "      |") ^ fermeture("Expérience :         " ^ string_of_int perso.xp ^ "      |") ^
+    repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Expérience :          " ^ string_of_int perso.xp ^ "      |")-2) ^ "\n" ^ 
+    _enclosing( lvl_sup perso ) ^ fermer_tableau(lvl_sup perso) ^ "\n" ^
+    
+    
+    affichage_ligne(String.length("+---------------- Fiche de personnage ------------+")) ^ "\n" 
+
 
   let afficher_infos_perso = fun perso -> print_string(etat_perso perso)
 
