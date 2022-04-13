@@ -37,34 +37,39 @@ struct
     | (Guerrier, n) -> if n > 2 then string_of_int(30+5*perso.niveau) else "30" 
     | (Magicien, n) -> if n > 2 then string_of_int(50+5*perso.niveau) else "50"
       
-  let lvl_sup = fun perso -> if ((2.**float(perso.niveau))*.10.)-.float(perso.xp) > 100.
-      then "Niveau supérieur :  " ^ string_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp)) ^ "     |"
-      else "Niveau supérieur :   " ^ string_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp)) ^ "     |"
+  let lvl_sup = fun perso -> if ((2.**float(perso.niveau))*.10.)-.float(perso.xp) > 100. || ((2.**float(perso.niveau))*.10.)-.float(perso.xp) < 0.
+      then "Niveau supérieur   : " ^ string_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp)) ^ "    |"
+      else "Niveau supérieur   : " ^ string_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp)) ^ "     |"
     
          
   let rec presence_poulet = fun sac -> match sac with
     | [] -> "Pas de poulets"
     | hd::tl when hd.type_obj = Poulet -> if hd.qte = 1 
-        then "Poulet  :  " ^ string_of_int(hd.qte)
-        else "Poulets :  " ^ string_of_int(hd.qte)
+        then " Poulet  :  " ^ string_of_int(hd.qte)
+        else " Poulets :  " ^ string_of_int(hd.qte)
     | _::tl -> presence_poulet tl
   
   let rec presence_eponge = fun sac -> match sac with
     | [] -> "Pas d'éponges"
     | hd::tl when hd.type_obj = Eponge -> if hd.qte = 1 
-        then "Eponge  :  " ^ string_of_int(hd.qte)
-        else "Eponges :  " ^ string_of_int(hd.qte)
+        then " Eponge  :  " ^ string_of_int(hd.qte)
+        else " Eponges :  " ^ string_of_int(hd.qte)
     | _::tl -> presence_eponge tl
                  
   let rec presence_piece = fun sac -> match sac with
     | [] -> "Pas de pieces"
     | hd::tl when hd.type_obj = Piece -> if hd.qte = 1 
-        then "Pièce   :  " ^ string_of_int(hd.qte)
-        else "Pièces  :  " ^ string_of_int(hd.qte)
+        then " Pièce   :  " ^ string_of_int(hd.qte)
+        else " Pièces  :  " ^ string_of_int(hd.qte)
     | _::tl -> presence_piece tl
   
     
-    
+   let experience_perso = fun perso -> if perso.xp > 99 
+    then "Expérience         : " ^ string_of_int perso.xp ^ "     | "
+    else if perso.xp > 9 then "Expérience         : " ^ string_of_int perso.xp ^ "      | "
+    else "Expérience         : " ^ "0" ^ string_of_int perso.xp ^ "      | "
+
+
   let rec iterate : (int * ('a->'a) * 'a) -> 'a =
     fun (count, f, initial_value) ->
       if count <= 0
@@ -90,16 +95,16 @@ struct
     
     
     affichage_attr_perso("+--------- Attribut ------------------ Sac ----------+") ^ "\n" ^ 
-    _enclosing("Point de vie :       " ^ (string_of_float perso.pv) ^ "/20." ^ " |") ^ (presence_poulet perso.sac) ^ " " ^ fermeture("Point de vie :       " ^ (string_of_float perso.pv) ^ "/20." ^ " | " ^ (presence_poulet perso.sac)) ^ 
+    _enclosing("Point de vie       : " ^ (string_of_float perso.pv) ^ "/20." ^ " |") ^ (presence_poulet perso.sac) ^ " " ^ fermeture("Point de vie :       " ^ (string_of_float perso.pv) ^ "/20." ^ " | " ^ (presence_poulet perso.sac)) ^ 
     
     repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Point de vie : " ^ (string_of_float perso.pv))-2) ^ "\n" ^
-    _enclosing("Dégats :             " ^ (nb_degats (perso.role) ^ "      |")) ^ (presence_piece perso.sac) ^ fermer_tableau("Dégats :             " ^ (nb_degats (perso.role) ^ "     |") ^ (presence_piece perso.sac)) ^
+    _enclosing("Dégats             : " ^ (nb_degats (perso.role) ^ "      |")) ^ (presence_piece perso.sac) ^ fermer_tableau("Dégats :             " ^ (nb_degats (perso.role) ^ "     |") ^ (presence_piece perso.sac)) ^
     
     repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Dégats :            " ^ (nb_degats (perso.role)))-2) ^ "\n" ^
     _enclosing("Chances de toucher : " ^ (chance_toucher perso perso.niveau) ^ "      |") ^ (presence_eponge perso.sac) ^ fermeture("Chances de toucher : " ^ (chance_toucher perso perso.niveau) ^ "      |" ^ (presence_eponge perso.sac)) ^
     
     repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Chances de toucher : " ^ (chance_toucher perso perso.niveau))-2) ^ "\n" ^
-    _enclosing("Expérience :          " ^ string_of_int perso.xp ^ "      |") ^ fermeture("Expérience :         " ^ string_of_int perso.xp ^ "      |") ^
+    _enclosing(experience_perso perso) ^ fermer_tableau(experience_perso perso ) ^
     repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Expérience :          " ^ string_of_int perso.xp ^ "      |")-2) ^ "\n" ^ 
     _enclosing( lvl_sup perso ) ^ fermer_tableau(lvl_sup perso) ^ "\n" ^
     
