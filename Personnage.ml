@@ -10,6 +10,10 @@ struct
   type sac= objet list
   type perso = { nom : string ; sexe : genre ; role : classe ; pv : float ; xp :int  ; niveau : int  ; sac : sac}
   
+  exception Champs_Vide
+  exception Personnage_mort
+  exception Tue_En_Dormant of Monstre.monstre 
+  
   let classe_genre = fun perso -> match (perso.sexe, perso.role) with
     | (Homme, Archer) -> "Archer"
     | (Homme, Guerrier) -> "Guerrier"
@@ -17,14 +21,9 @@ struct
     | (Femme, Archer) -> "Archere"
     | (Femme, Guerrier) -> "Guerriere"
     | (Femme, Magicien) -> "Magicienne"
-  
-  exception Champs_Vide
-  exception Personnage_mort
-  exception Tue_En_Dormant of Monstre.monstre 
 
   let init_perso = fun n -> fun g -> fun r ->
     {nom = n; sexe = g; role = r; pv = 20.; xp = 0; niveau = 1; sac = [{type_obj = Objet.Eponge; qte = 2};{type_obj = Objet.Poulet; qte = 1};{type_obj = Objet.Piece; qte = 2}] }
-  
   
   let nb_degats = fun perso -> match perso with
     | Archer -> "04"
@@ -39,7 +38,9 @@ struct
   let lvl_sup = fun perso -> if ((2.**float(perso.niveau))*.10.)-.float(perso.xp) > 100. || ((2.**float(perso.niveau))*.10.)-.float(perso.xp) < 0.
       then "Niveau supérieur   : " ^ string_of_int(int_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp))) ^ "     |"
       else "Niveau supérieur   : " ^ string_of_int(int_of_float(((2.**float(perso.niveau))*.10.)-.float(perso.xp))) ^ "      |"
-    
+  
+  let rec presence_objet = fun objet -> 
+    Objet.affiche_objet objet.type_obj objet.qte
          
   let rec presence_poulet = fun sac -> match sac with
     | [] -> "Pas de poulets"
@@ -60,14 +61,12 @@ struct
     | hd::tl when hd.type_obj = Piece -> if hd.qte = 1 
         then " Pièce   :  " ^ string_of_int(hd.qte)
         else " Pièces  :  " ^ string_of_int(hd.qte)
-    | _::tl -> presence_piece tl
-  
+    | _::tl -> presence_piece tl  
     
-   let experience_perso = fun perso -> if perso.xp > 99 
+  let experience_perso = fun perso -> if perso.xp > 99 
     then "Expérience         : " ^ string_of_int perso.xp ^ "     | "
     else if perso.xp > 9 then "Expérience         : " ^ string_of_int perso.xp ^ "      | "
     else "Expérience         : " ^ "0" ^ string_of_int perso.xp ^ "      | "
-
 
   let rec iterate : (int * ('a->'a) * 'a) -> 'a =
     fun (count, f, initial_value) ->
@@ -86,14 +85,14 @@ struct
   let fermer_tableau = fun chaine -> repeat_string(" ", String.length("+----------------- Fiche de personnage --------------+")-String.length(chaine)-3) ^ "|"
     
   let etat_perso = fun perso -> 
-    affichage_fiche_perso ("+----------------- Fiche de personnage --------------+") ^ "\n" ^ 
+    affichage_fiche_perso ("+---------------- Fiche de personnage ---------------+") ^ "\n" ^ 
     _enclosing("Nom : " ^ perso.nom) ^ (fermeture ("Nom : " ^ perso.nom)) ^
     repeat_string (" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2+1+String.length(perso.nom) - (String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))- String.length(perso.nom))) ^ "\n" ^ 
     _enclosing("Niveau " ^ string_of_int (perso.niveau) ^ "        Classe : " ^ (classe_genre perso)) ^ (fermeture ("Niveau " ^ string_of_int (perso.niveau) ^ "        Classe : " ^ (classe_genre perso))) ^
     repeat_string (" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))-5) ^ "\n" ^ 
     
     
-    affichage_attr_perso("+--------- Attribut ------------------ Sac ----------+") ^ "\n" ^ 
+    affichage_attr_perso("+---------- Attribut ------------------- Sac --------+") ^ "\n" ^ 
     _enclosing("Point de vie       : " ^ (string_of_float perso.pv) ^ "/20." ^ " |") ^ (presence_poulet perso.sac) ^ " " ^ fermeture("Point de vie :       " ^ (string_of_float perso.pv) ^ "/20." ^ " | " ^ (presence_poulet perso.sac)) ^ 
     
     repeat_string(" ", String.length("Niveau " ^ string_of_int (perso.niveau) ^ " Classe : " ^ (classe_genre perso))*2-String.length("Point de vie : " ^ (string_of_float perso.pv))-2) ^ "\n" ^

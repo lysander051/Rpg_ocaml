@@ -3,12 +3,16 @@ module Objet =
 struct 
 	type type_obj= | Poulet | Eponge | Piece | Rien
 	
-	let affiche_objet = fun obj ->
+	let affiche_objet = fun obj n->
 	match obj with 
-			| Poulet -> "poulet"
-			| Eponge -> "eponge"
-			| Piece -> "piece"
+			| Poulet when n=1 -> "poulet"
+			| Poulet when n>1 -> "poulets"
+			| Eponge when n=1 -> "eponge"
+			| Eponge when n>1 -> "eponges"
+			| Piece when n=1-> "piece"
+			| Piece when n>1-> "pieces"
 			| Rien -> "rien"	
+			| _ -> "rien"
 
 	let init_objet = 
 		let n= Random.int 4 in 

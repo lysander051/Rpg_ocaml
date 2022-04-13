@@ -83,7 +83,7 @@ let rec init_aventure = fun ()->
 let fuir : Personnage.perso -> Personnage.perso = fun perso ->
   let taille = List.length(perso.sac) in
   let obj = List.nth perso.sac (Random.int taille) in
-  let () = print_string (delimiteur() ^">Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj ^"\n") in
+  let () = print_string (delimiteur() ^">Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj 1 ^"\n") in
   Personnage.retirer_objet obj.type_obj 1 perso
 ;;
 

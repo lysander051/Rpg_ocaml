@@ -24,7 +24,7 @@ struct
     | Golem -> "golem"
     | Nuee a -> " nuee de moustique"
     | Sanglier ->"sanglier"
-  in s ^ "  obj =  " ^ (Objet.affiche_objet monstre.loot) ^ "  pv =  " ^ (string_of_int monstre.pv) ^"\n"
+  in s ^ "  obj =  " ^ (Objet.affiche_objet monstre.loot 1) ^ "  pv =  " ^ (string_of_int monstre.pv) ^"\n"
 
   let monstre_frapper : monstre -> float =fun monstre ->
     let chance = Random.int 100 in 
