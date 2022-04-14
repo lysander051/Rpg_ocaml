@@ -114,13 +114,28 @@ let fuir : Personnage.perso -> Personnage.perso = fun perso ->
   else personnage
 ;;
 
-
 let continuerAventure = fun perso ->
   let monstre = Monstre.init_monstre() in
   let () = 
   if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ ">Le sol tremble sous vos pied, vous êtes destabilisé quand soudain un golem apparait devant vous.\n")
   else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ ">Une odeur forte que vous connaissez bien, vous parvient. Un sanglier sort des bois et vous attaque.\n")
   else print_string (delimiteur() ^ ">Vous entendez un bourdonnement tout autour de vous. quand soudain une nué de moustique se jette sur vous.\n")
+  in   
+  let rec aux = fun perso ->
+    let choix = read_action() in
+    if choix = "A" then (combattre perso monstre)
+    else if choix = "F" then fuir perso
+    else (print_string (delimiteur()); Personnage.afficher_infos_perso perso; aux perso)
+  in
+  aux perso
+;;
+
+let malheureuse_rencontre = fun perso->
+  let monstre = Monstre.init_monstre() in
+  let () = 
+  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ ">Un golem vous saute dessus au moment de votre fuite.\n")
+  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ ">Vous vous faites chargé par un sanglier lors de votre fuite.\n")
+  else print_string (delimiteur() ^ ">Une nuée de moustique vous encercle lors de votre fuite.\n")
   in   
   let rec aux = fun perso ->
     let choix = read_action() in
