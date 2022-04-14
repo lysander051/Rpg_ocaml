@@ -130,7 +130,6 @@ let continuerAventure = fun perso ->
   aux perso
 ;;
 
-
 let rec hubAventure = fun perso ->
   let c = read_hubAventure() in
   if      c="C" then hubAventure (continuerAventure perso)
