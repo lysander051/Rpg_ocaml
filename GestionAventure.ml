@@ -106,10 +106,10 @@ let fuir : Personnage.perso -> Personnage.perso = fun perso ->
 let combattre : Personnage.perso -> Monstre.monstre -> Personnage.perso = fun pers monstre ->
   let rec le_combat :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = fun attaquant p m -> 
     match attaquant  with 
-      |0 -> let pv_monstre= m.pv - Personnage.frapper p in 
+      |0 -> let frappe=Personnage.frapper p in Personnage.affiche_attaque p frappe ; let pv_monstre= m.pv - frappe  in
         if (pv_monstre <=0 ) then 
           let nouv_xp= p.xp +( Monstre.xp_gagne monstre) in Monstre.monstre_vaincu m ;
-          Personnage.changement_niveau p nouv_xp
+          Personnage.changement_niveau p nouv_xp 
         else let nouv_monstre : Monstre.monstre = {creature = monstre.creature; loot = monstre.loot; pv = pv_monstre}
         in le_combat 1 p nouv_monstre
       |_-> let degat = (Monstre.monstre_frapper m) in (print_string (Monstre.message_combat m degat)) ; let nouv_pers=(Personnage.mis_a_jour_pv (-. degat ) p) 
@@ -132,6 +132,7 @@ let continuerAventure = fun perso ->
   in
   aux perso
 ;;
+
 
 let rec hubAventure = fun perso ->
   let c = read_hubAventure() in

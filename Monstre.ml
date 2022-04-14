@@ -18,6 +18,7 @@ struct
       | 1 -> let moustique = (Random.int 25) in 
              {creature = Nuee moustique ; loot = Rien ; pv = 2 + moustique }
       | _ -> {creature = Sanglier ; loot = Objet.init_objet ; pv = 10 +(  d 1 4)  }
+      
 
   
   let affiche_monstre=  fun monstre -> let s = match monstre.creature with
