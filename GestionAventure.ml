@@ -80,29 +80,6 @@ let rec init_aventure = fun ()->
   Personnage.init_perso n g c
 ;;
 
-let malheureuse_rencontre = fun perso->
-  let monstre = Monstre.init_monstre() in
-  let () = 
-  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ ">Un golem vous saute dessus au moment de votre fuite.\n")
-  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ ">Vous vous faites chargé par un sanglier lors de votre fuite.\n")
-  else print_string (delimiteur() ^ ">Une nuée de moustique vous encercle lors de votre fuite.\n")
-  in   
-  let rec aux = fun perso ->
-    let choix = read_action() in
-    if choix = "A" then (combattre perso monstre)
-    else if choix = "F" then fuir perso
-    else (print_string (delimiteur()); Personnage.afficher_infos_perso perso; aux perso)
-  in
-  aux perso
-;;
-
-let fuir : Personnage.perso -> Personnage.perso = fun perso ->
-  let taille = List.length(perso.sac) in
-  let obj = List.nth perso.sac (Random.int taille) in
-  let () = print_string (delimiteur() ^">Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj 1 ^"\n") in
-  Personnage.retirer_objet obj.type_obj 1 perso
-;;
-
 let combattre : Personnage.perso -> Monstre.monstre -> Personnage.perso = fun pers monstre ->
   let rec le_combat :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = fun attaquant p m -> 
     match attaquant  with 
@@ -116,6 +93,27 @@ let combattre : Personnage.perso -> Monstre.monstre -> Personnage.perso = fun pe
         in le_combat 0 nouv_pers m
      in le_combat (Random.int 2) pers monstre
 ;; 
+
+let malheureuse_rencontre = fun perso->
+  let monstre = Monstre.init_monstre() in
+  let () = 
+  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ ">Un golem vous saute dessus au moment de votre fuite.\n")
+  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ ">Vous vous faites chargé par un sanglier lors de votre fuite.\n")
+  else print_string (delimiteur() ^ ">Une nuée de moustique vous encercle lors de votre fuite.\n")
+  in   
+  (combattre perso monstre)
+;;
+
+let fuir : Personnage.perso -> Personnage.perso = fun perso ->
+  let taille = List.length(perso.sac) in
+  let obj = List.nth perso.sac (Random.int taille) in
+  let () = print_string (delimiteur() ^">Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj 1 ^"\n") in
+  let personnage = Personnage.retirer_objet obj.type_obj 1 perso in
+  let rand = Random.int 10 in
+  if rand < 5 then malheureuse_rencontre personnage
+  else personnage
+;;
+
 
 let continuerAventure = fun perso ->
   let monstre = Monstre.init_monstre() in
