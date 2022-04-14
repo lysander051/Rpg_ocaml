@@ -11,7 +11,7 @@ struct
       | 0 -> 0
       | _ -> (Random.int n) +  d (x-1)  n
 
-  let init_monstre = 
+  let init_monstre = fun () ->
     let x = Random.int 3 in 
     match x with 
       | 0 -> {creature = Golem ; loot = Objet.init_objet ; pv = 25 +( d 1 6 ) }

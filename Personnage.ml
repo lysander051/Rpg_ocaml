@@ -149,7 +149,7 @@ struct
 
   let dormir : perso -> perso = 
     fun perso -> let chance_monstre = Random.int 100 in
-    if (chance_monstre<5) then let lemonstre = Monstre.init_monstre in ((print_string ("Malheureusement, un " ^ Monstre.nom_monstre lemonstre ^ " vous tue dans la nuit\n")); raise (Tue_En_Dormant lemonstre))
+    if (chance_monstre<5) then let lemonstre = Monstre.init_monstre() in ((print_string ("Malheureusement, un " ^ Monstre.nom_monstre lemonstre ^ " vous tue dans la nuit\n")); raise (Tue_En_Dormant lemonstre))
     else 
       mis_a_jour_pv 4. perso
 

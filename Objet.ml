@@ -14,7 +14,7 @@ struct
 			| Rien -> "rien"	
 			| _ -> "rien"
 
-	let affiche_objet = fun obj n->
+	let affiche_objet_interface = fun obj n->
 		match obj with 
 			| Poulet when n=1 -> " Poulet  :  "
 			| Poulet when n>1 -> " Poulets :  "
@@ -22,7 +22,6 @@ struct
 			| Eponge when n>1 -> " Eponges :  "
 			| Piece when n=1->   " Pièce   :  "
 			| Piece when n>1-> 	 " Pièces  :  "
-			| Rien -> "rien"	
 			| _ -> "rien"
 
 	let init_objet = 
