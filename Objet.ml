@@ -14,6 +14,17 @@ struct
 			| Rien -> "rien"	
 			| _ -> "rien"
 
+	let affiche_objet = fun obj n->
+		match obj with 
+			| Poulet when n=1 -> " Poulet  :  "
+			| Poulet when n>1 -> " Poulets :  "
+			| Eponge when n=1 -> " Eponge  :  "
+			| Eponge when n>1 -> " Eponges :  "
+			| Piece when n=1->   " Pièce   :  "
+			| Piece when n>1-> 	 " Pièces  :  "
+			| Rien -> "rien"	
+			| _ -> "rien"
+
 	let init_objet = 
 		let n= Random.int 4 in 
 			match n with 
