@@ -86,7 +86,7 @@ let combattre :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = 
       |0 -> let frappe=Personnage.frapper p in Personnage.affiche_attaque p frappe ; let pv_monstre= m.pv - frappe  in
         if (pv_monstre <=0 ) then 
           let nouv_xp= p.xp +( Monstre.xp_gagne monstre) in Monstre.monstre_vaincu m ;
-          Personnage.changement_niveau p nouv_xp 
+          Personnage.modifier_sac monstre.loot 1 (Personnage.changement_niveau p nouv_xp) 
         else let nouv_monstre : Monstre.monstre = {creature = monstre.creature; loot = monstre.loot; pv = pv_monstre}
         in le_combat 1 p nouv_monstre
       |_-> let degat = (Monstre.monstre_frapper m) in (print_string (Monstre.message_combat m degat)) ; let nouv_pers=(Personnage.mis_a_jour_pv (-. degat ) p) 
@@ -106,12 +106,14 @@ let malheureuse_rencontre = fun perso->
 
 let fuir : Personnage.perso -> Personnage.perso = fun perso ->
   let taille = List.length(perso.sac) in
-  let obj = List.nth perso.sac (Random.int taille) in
-  let () = print_string (delimiteur() ^">Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj 1 ^"\n") in
-  let personnage = Personnage.retirer_objet obj.type_obj 1 perso in
-  let rand = Random.int 10 in
-  if rand < 5 then malheureuse_rencontre personnage
-  else personnage
+  if 0 < taille then 
+    (let obj = List.nth perso.sac (Random.int taille) in
+    let () = print_string (delimiteur() ^">Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj 1 ^"\n") in
+    let personnage = Personnage.modifier_sac obj.type_obj (-1) perso in
+    let rand = Random.int 10 in
+    if rand < 1 then malheureuse_rencontre personnage
+    else personnage)
+  else perso
 ;;
 
 let continuerAventure = fun perso ->

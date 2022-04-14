@@ -38,8 +38,8 @@ struct
 
   let xp_gagne : monstre -> int = fun m-> match m.creature with
     | Golem -> 8
-    | Sanglier ->4
-    | Nuee _ ->2
+    | Sanglier -> 4
+    | Nuee _ -> 2
 
   let message_combat : monstre -> float -> string = fun m degat ->
     if degat= 0. then

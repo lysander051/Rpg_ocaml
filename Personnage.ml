@@ -10,8 +10,8 @@ struct
   type sac= objet list
   type perso = { nom : string ; sexe : genre ; role : classe ; pv : float ; xp :int  ; niveau : int  ; sac : sac}
   
-  exception Champs_Vide
   exception Personnage_mort
+  exception LevelMax
   exception Tue_En_Dormant of Monstre.monstre 
   
   let classe_genre = fun perso -> match (perso.sexe, perso.role) with
@@ -127,7 +127,7 @@ struct
     | _ -> 0
     
 
-  let avoir_un_poulet: perso -> bool = fun pers ->
+  let avoir_un_poulet : perso -> bool = fun pers ->
     let rec aux = fun sac -> 
       match sac with
       | [] -> false
@@ -135,18 +135,19 @@ struct
       | h::t -> false || aux t
     in aux pers.sac
 
-  let retirer_objet = fun obj n perso ->
-    let rec aux = fun obj n nouveauSac persoSac ->
+  let modifier_sac = fun t_obj n perso ->
+    let rec aux = fun t_obj n nouveauSac persoSac ->
       match persoSac with
-      | [] -> {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = nouveauSac }
-      | {type_obj=a; qte=b}::t when a=obj && b=n -> aux obj n (nouveauSac) t
-      | {type_obj=a; qte=b}::t when a=obj && b>n -> aux obj n ({type_obj=a; qte=b-n}::nouveauSac) t 
-      | h::t -> aux obj n (h::nouveauSac) t
-    in aux obj n [] perso.sac
+      | [] when n<=0 -> {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = nouveauSac }
+      | [] -> {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = {type_obj = t_obj; qte = n}::nouveauSac }
+      | {type_obj=a; qte=b}::t when a=t_obj && b=(-n) -> aux t_obj n (nouveauSac) t
+      | {type_obj=a; qte=b}::t when a=t_obj && b>(-n) -> aux t_obj n ({type_obj=a; qte=b+n}::nouveauSac) t 
+      | h::t -> aux t_obj n (h::nouveauSac) t
+    in aux t_obj n [] perso.sac
 
   let manger : perso -> (bool *perso) = fun perso ->
     if (not(avoir_un_poulet perso) )  then (false,perso)
-    else (true, retirer_objet Objet.Poulet 1 (mis_a_jour_pv 2. perso))
+    else (true, (modifier_sac (Objet.Poulet) (-1) (mis_a_jour_pv 2. perso)))
 
   let dormir : perso -> perso = 
     fun perso -> let chance_monstre = Random.int 100 in
@@ -162,21 +163,22 @@ struct
   let changement_niveau : perso -> int -> perso = fun p pt_xp ->
     let rec aux : int -> int -> perso = fun niv xp  ->
       let niv_1 = (2.**float(niv))*.10. in let niv_avant= (2.**float(niv-1))*.10. in 
-      if (float)xp >= niv_1 then aux (niv+1) xp 
+      if (float)xp >= niv_1 then 
+        if 10 <= (niv+1) then raise LevelMax
+        else aux (niv+1) xp 
       else 
         if niv=1 then  {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = pt_xp; niveau =niv ; sac = p.sac }
         else
           let nouv_xp =xp - (int_of_float niv_avant) in 
-        ( if niv != p.niveau then  (print_string ("Vous avez atteint le niveau " ^ (string_of_int niv)))) ;
-        {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = nouv_xp; niveau =niv ; sac = p.sac }
+          ( if niv != p.niveau then  (print_string ("Vous avez atteint le niveau " ^ (string_of_int niv)))) ;
+          {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = nouv_xp; niveau =niv ; sac = p.sac }
       in aux p.niveau pt_xp
 
-    let affiche_attaque :perso -> int -> unit = fun p frappe -> 
-     
-      match frappe with 
-      | 0 -> ( print_string "Vous ripostez, mais vous manquez la cible \n")
-      | _ -> ( print_string ("Vous frappez et infligez "^  (nb_degats p) ^ " points de dégât \n"))
-     (* | _ -> ( print_string  "Vous frappez et infligez " ^  (nb_degats p) ^ "points de dégât")*)
+  let affiche_attaque :perso -> int -> unit = fun p frappe ->    
+    match frappe with 
+    | 0 -> ( print_string "Vous ripostez, mais vous manquez la cible \n")
+    | _ -> ( print_string ("Vous frappez et infligez "^  (nb_degats p) ^ " points de dégât \n"))
+    (* | _ -> ( print_string  "Vous frappez et infligez " ^  (nb_degats p) ^ "points de dégât")*)
 
 end;;
 
