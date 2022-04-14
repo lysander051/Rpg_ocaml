@@ -130,22 +130,6 @@ let continuerAventure = fun perso ->
   aux perso
 ;;
 
-let malheureuse_rencontre = fun perso->
-  let monstre = Monstre.init_monstre() in
-  let () = 
-  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ ">Un golem vous saute dessus au moment de votre fuite.\n")
-  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ ">Vous vous faites chargé par un sanglier lors de votre fuite.\n")
-  else print_string (delimiteur() ^ ">Une nuée de moustique vous encercle lors de votre fuite.\n")
-  in   
-  let rec aux = fun perso ->
-    let choix = read_action() in
-    if choix = "A" then (combattre perso monstre)
-    else if choix = "F" then fuir perso
-    else (print_string (delimiteur()); Personnage.afficher_infos_perso perso; aux perso)
-  in
-  aux perso
-;;
-
 
 let rec hubAventure = fun perso ->
   let c = read_hubAventure() in
