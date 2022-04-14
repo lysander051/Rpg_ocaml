@@ -80,7 +80,7 @@ let rec init_aventure = fun ()->
   Personnage.init_perso n g c
 ;;
 
-let combattre : Personnage.perso -> Monstre.monstre -> Personnage.perso = fun pers monstre ->
+let combattre :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = fun premier pers monstre ->
   let rec le_combat :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = fun attaquant p m -> 
     match attaquant  with 
       |0 -> let frappe=Personnage.frapper p in Personnage.affiche_attaque p frappe ; let pv_monstre= m.pv - frappe  in
@@ -91,7 +91,7 @@ let combattre : Personnage.perso -> Monstre.monstre -> Personnage.perso = fun pe
         in le_combat 1 p nouv_monstre
       |_-> let degat = (Monstre.monstre_frapper m) in (print_string (Monstre.message_combat m degat)) ; let nouv_pers=(Personnage.mis_a_jour_pv (-. degat ) p) 
         in le_combat 0 nouv_pers m
-     in le_combat (Random.int 2) pers monstre
+     in le_combat premier pers monstre
 ;; 
 
 let malheureuse_rencontre = fun perso->
@@ -101,7 +101,7 @@ let malheureuse_rencontre = fun perso->
   else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ ">Vous vous faites chargé par un sanglier lors de votre fuite.\n")
   else print_string (delimiteur() ^ ">Une nuée de moustique vous encercle lors de votre fuite.\n")
   in   
-  (combattre perso monstre)
+  (combattre 1 perso monstre)
 ;;
 
 let fuir : Personnage.perso -> Personnage.perso = fun perso ->
@@ -123,7 +123,7 @@ let continuerAventure = fun perso ->
   in   
   let rec aux = fun perso ->
     let choix = read_action() in
-    if choix = "A" then (combattre perso monstre)
+    if choix = "A" then (combattre 0 perso monstre)
     else if choix = "F" then fuir perso
     else (print_string (delimiteur()); Personnage.afficher_infos_perso perso; aux perso)
   in
