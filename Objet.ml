@@ -14,15 +14,15 @@ struct
 			| Rien -> "rien"	
 			| _ -> "rien"
 
-	let affiche_objet_interface = fun obj n->
+	let visuel_objet = fun obj n->
 		match obj with 
-			| Poulet when n=1 -> " Poulet  :  "
-			| Poulet when n>1 -> " Poulets :  "
-			| Eponge when n=1 -> " Eponge  :  "
-			| Eponge when n>1 -> " Eponges :  "
-			| Piece when n=1->   " Pièce   :  "
-			| Piece when n>1-> 	 " Pièces  :  "
-			| _ -> "rien"
+			| Poulet when n=1 -> " Poulet  :  " ^ string_of_int(n)
+			| Poulet when n>1 -> " Poulets :  " ^ string_of_int(n)
+			| Eponge when n=1 -> " Eponge  :  " ^ string_of_int(n)
+			| Eponge when n>1 -> " Eponges :  " ^ string_of_int(n)
+			| Piece when n=1->   " Pièce   :  " ^ string_of_int(n)
+			| Piece when n>1-> 	 " Pièces  :  " ^ string_of_int(n)
+			| _ -> "                     "
 
 	let init_objet = 
 		let n= Random.int 4 in 
