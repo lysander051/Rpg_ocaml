@@ -151,8 +151,12 @@ struct
 
   let dormir : perso -> perso = 
     fun perso -> let chance_monstre = Random.int 100 in
-    if (chance_monstre<5) then let lemonstre = Monstre.init_monstre() in ((print_string ("Malheureusement, un " ^ Monstre.nom_monstre lemonstre ^ " vous tue dans la nuit\n")); raise (Tue_En_Dormant lemonstre))
+    if (chance_monstre<5) 
+      then let lemonstre = Monstre.init_monstre() in 
+      ((print_string ("Malheureusement, vous vous faites attaquer dans la nuit.\n" ^ Monstre.nom_monstre lemonstre ^ " vous attaque et vous êtes mort.\n")); 
+      raise (Tue_En_Dormant lemonstre))
     else 
+      print_string ("Vous passez une nuit revigorante et êtes prêt à reprendre l'aventure... \nOu redormir\n");
       mis_a_jour_pv 4. perso
 
  (* let rec changement_niveau :int -> float -> int*int = fun niv xp  ->

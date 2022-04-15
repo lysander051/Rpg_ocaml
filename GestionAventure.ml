@@ -5,63 +5,76 @@ open Personnage;;
 
 exception Quitte_le_jeu;;
 
-let delimiteur = fun () ->"+--------------------------------------------------------------------------------+\n"
+let delimiteur = fun () ->"\n+--------------------------------------------------------------------------------+\n"
 
 let rec read_nom = fun () ->
   let () = print_string (delimiteur() ^ ">Ton nom: ") in
   let n = read_line() in
-  if n="" then (print_string "nom incorrecte\n"; read_nom())
-  else n
+  if n="" then 
+    (print_string "nom incorrecte\n"; read_nom())
+  else 
+    n
 ;;
 
 let rec read_genre = fun () ->
   let () = print_string (delimiteur() ^ 
-">Ton genre: 
+"> Ton genre: 
   F) Femme
   H) Homme
 Votre choix: ") in
 let g=read_line() in
-if not(g="F" || g="H") then (print_string "tu DOIS avoir un genre\n"; read_genre())
-else (if g="F" then Personnage.Femme else Personnage.Homme)
+if 
+  not(g="F" || g="H" || g="f" || g="h") then (print_string "tu DOIS avoir un genre\n"; read_genre())
+else 
+  (if g="F" || g="f" then Personnage.Femme else Personnage.Homme)
 ;;
 
 let rec read_classe = fun g ->
   let () = 
   if g = Personnage.Homme then 
     print_string (delimiteur() ^ 
-">Ta classe: 
+"> Ta classe: 
   A) Archer
   G) Guerrier
   M) Magicien
 Votre choix: ") 
   else
     print_string (delimiteur() ^ 
-">Ta classe: 
+"> Ta classe: 
   A) Archere
   G) Guerriere
   M) Magicienne
 Votre choix: ")
   in 
   let c =read_line() in
-  if not(c="A" || c="G" || c="M") then (print_string "il faut choisir une classe\n"; read_classe(g))
-  else (if c="A" then Personnage.Archer else if c="G" then Personnage.Guerrier else Personnage.Magicien)
+  if not(c="A" || c="G" || c="M" || c="a" || c="g" || c="m") 
+    then (print_string "il faut choisir une classe\n"; read_classe(g))
+  else 
+    (if c="A" || c="a" then 
+      Personnage.Archer 
+    else if c="G" || c="g"
+      then Personnage.Guerrier 
+    else 
+      Personnage.Magicien)
 ;;
 
 let rec read_action = fun() ->
   let () = print_string (delimiteur() ^ 
-">Que voulez-vous faire
+"> Que voulez-vous faire
   A) Attaquer  
   F) Fuir 
   V) Voir l'état de votre perso
 Votre choix: ") in
   let c = read_line() in
-  if not(c="A" || c="F" || c="V") then (print_string "il faut faire un choix\n"; read_action())
-  else c
+  if not(c="A" || c="F" || c="V" || c="a" || c="f" || c="v") 
+    then (print_string "il faut faire un choix\n"; read_action())
+  else 
+    c
 ;;
 
 let rec read_hubAventure = fun () ->
   let () = print_string (delimiteur() ^
-">Que voulez-vous faire?
+"> Que voulez-vous faire?
  C) Continuer votre chemin
  D) Dormir
  M) Manger
@@ -69,8 +82,10 @@ let rec read_hubAventure = fun () ->
  Q) Quitter l'aventure
 Votre choix:") in
 let c = read_line() in
-  if not(c="C" || c="D" || c="M" || c="V" || c="Q") then (print_string "il faut faire un choix\n"; read_hubAventure())
-  else c
+  if not(c="C" || c="D" || c="M" || c="V" || c="Q" || c="c" || c="d" || c="m" || c="v" || c="q") 
+    then (print_string "il faut faire un choix\n"; read_hubAventure())
+  else 
+    c
 ;;
 
 let rec init_aventure = fun ()->
@@ -97,9 +112,9 @@ let combattre :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = 
 let malheureuse_rencontre = fun perso->
   let monstre = Monstre.init_monstre() in
   let () = 
-  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ ">Un golem vous saute dessus au moment de votre fuite.\n")
-  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ ">Vous vous faites chargé par un sanglier lors de votre fuite.\n")
-  else print_string (delimiteur() ^ ">Une nuée de moustique vous encercle lors de votre fuite.\n")
+  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ "> Un golem vous saute dessus au moment de votre fuite.\n")
+  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ "> Vous vous faites chargé par un sanglier lors de votre fuite.\n")
+  else print_string (delimiteur() ^ "> Une nuée de moustique vous encercle lors de votre fuite.\n")
   in   
   (combattre 1 perso monstre)
 ;;
@@ -108,7 +123,7 @@ let fuir : Personnage.perso -> Personnage.perso = fun perso ->
   let taille = List.length(perso.sac) in
   if 0 < taille then 
     (let obj = List.nth perso.sac (Random.int taille) in
-    let () = print_string (delimiteur() ^">Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj 1 ^"\n") in
+    let () = print_string (delimiteur() ^"> Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj 1 ^"\n") in
     let personnage = Personnage.modifier_sac obj.type_obj (-1) perso in
     let rand = Random.int 10 in
     if rand < 1 then malheureuse_rencontre personnage
@@ -119,14 +134,14 @@ let fuir : Personnage.perso -> Personnage.perso = fun perso ->
 let continuerAventure = fun perso ->
   let monstre = Monstre.init_monstre() in
   let () = 
-  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ ">Le sol tremble sous vos pied, vous êtes destabilisé quand soudain un golem apparait devant vous.\n")
-  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ ">Une odeur forte que vous connaissez bien, vous parvient. Un sanglier sort des bois et vous attaque.\n")
-  else print_string (delimiteur() ^ ">Vous entendez un bourdonnement tout autour de vous. quand soudain une nué de moustique se jette sur vous.\n")
+  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ "> Le sol tremble sous vos pied, vous êtes destabilisé. \nquand soudain un golem apparait devant vous.\n")
+  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ "> Une odeur forte que vous connaissez bien, vous parvient. \nUn sanglier sort des bois et vous attaque.\n")
+  else print_string (delimiteur() ^ "> Vous entendez un bourdonnement tout autour de vous. \nQuand soudain une nué de moustique se jette sur vous.\n")
   in   
   let rec aux = fun perso ->
     let choix = read_action() in
-    if choix = "A" then (combattre 0 perso monstre)
-    else if choix = "F" then fuir perso
+    if choix = "A" || choix = "a" then (combattre 0 perso monstre)
+    else if choix = "F" || choix = "f" then fuir perso
     else (print_string (delimiteur()); Personnage.afficher_infos_perso perso; aux perso)
   in
   aux perso
@@ -134,12 +149,12 @@ let continuerAventure = fun perso ->
 
 let rec hubAventure = fun perso ->
   let c = read_hubAventure() in
-  if      c="C" then hubAventure (continuerAventure perso)
-  else if c="D" then (print_string (delimiteur() ^ ">Vous installez votre campement et tombez rapidement endormie.\n"); hubAventure (Personnage.dormir perso))
-  else if c="M" then 
+  if      c="C" || c="c" then hubAventure (continuerAventure perso)
+  else if c="D" || c="d" then (print_string (delimiteur() ^ "> Vous installez votre campement et tombez rapidement endormie.\n"); hubAventure (Personnage.dormir perso))
+  else if c="M" || c="m" then 
     (let mange = Personnage.manger perso in 
-    if (fst mange) then (print_string (delimiteur() ^ ">Vous mangez un peu avant de reprendre votre aventure.\n"); hubAventure (snd mange))
-    else (print_string (delimiteur() ^ ">Vous n'avez pas à manger\n"); hubAventure (snd mange)))
-  else if c="V" then (print_string (delimiteur()); Personnage.afficher_infos_perso perso; hubAventure perso)
+    if (fst mange) then (print_string (delimiteur() ^ "> Vous mangez un peu avant de reprendre votre aventure.\n"); hubAventure (snd mange))
+    else (print_string (delimiteur() ^ "> Vous n'avez pas à manger\n"); hubAventure (snd mange)))
+  else if c="V" || c="v" then (print_string (delimiteur()); Personnage.afficher_infos_perso perso; hubAventure perso)
   else raise Quitte_le_jeu
 ;;

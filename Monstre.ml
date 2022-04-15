@@ -17,9 +17,7 @@ struct
       | 0 -> {creature = Golem ; loot = Objet.init_objet ; pv = 25 +( d 1 6 ) }
       | 1 -> let moustique = (Random.int 25) in 
              {creature = Nuee moustique ; loot = Rien ; pv = 2 + moustique }
-      | _ -> {creature = Sanglier ; loot = Objet.init_objet ; pv = 10 +(  d 1 4)  }
-      
-
+      | _ -> {creature = Sanglier ; loot = Objet.init_objet ; pv = 10 +(  d 1 4)  }    
   
   let affiche_monstre=  fun monstre -> let s = match monstre.creature with
     | Golem -> "golem"
@@ -46,14 +44,14 @@ struct
       "L'ennemi attaque mais vous manque\n"
     else
       match m.creature with 
-        |Golem -> "Le golem vous attaque et vous perdez "^ (string_of_float degat) ^ "points \n"
-        |Sanglier -> "Le sanglier vous attaque et vous perdez "^ (string_of_float degat) ^ "points \n"
-        | Nuee _ -> "La nuée de moustique vous attaque et vous perdez "^ (string_of_float degat) ^ "points \n"
+        | Golem -> "Le golem vous attaque et vous perdez "^ (string_of_float degat) ^ " points de vie\n"
+        | Sanglier -> "Le sanglier vous attaque et vous perdez "^ (string_of_float degat) ^ " points de vie\n"
+        | Nuee _ -> "La nuée de moustique vous attaque et vous perdez "^ (string_of_float degat) ^ " points de vie\n"
         
   let nom_monstre = fun m ->
     match m.creature with
-    |Golem -> "Le golem"
-    |Sanglier -> "Le sanglier"
+    | Golem -> "Le golem"
+    | Sanglier -> "Le sanglier"
     | Nuee _ -> "La nuée de moustique"
 
   let monstre_vaincu : monstre -> unit = fun m -> print_string "Vous avez survécu à l'attaque du monstre \n"
