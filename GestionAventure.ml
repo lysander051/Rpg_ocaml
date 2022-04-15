@@ -11,7 +11,9 @@ let rec read_nom = fun () ->
   let () = print_string (delimiteur() ^ ">Ton nom: ") in
   let n = read_line() in
   if n="" then 
-    (print_string "nom incorrecte\n"; read_nom())
+    (print_string "Il faut choisir un nom de personnage.\n"; read_nom())
+  else if (String.length n) > 40 then
+    (print_string "Le nom est trop long.\n"; read_nom())
   else 
     n
 ;;
@@ -110,15 +112,20 @@ let combattre :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = 
 ;; 
 
 let malheureuse_rencontre = fun perso->
-  let monstre = Monstre.init_monstre() in
-  let () = 
-  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ "> Un golem vous saute dessus au moment de votre fuite.\n")
-  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ "> Vous vous faites chargé par un sanglier lors de votre fuite.\n")
-  else print_string (delimiteur() ^ "> Une nuée de moustique vous encercle lors de votre fuite.\n")
-  in   
-  (combattre 1 perso monstre)
+  let rand = Random.int 100 in
+  if rand < 50 then 
+    let monstre = Monstre.init_monstre() in
+    let () = 
+    if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ "> Un golem vous saute dessus au moment de votre fuite.\n")
+    else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ "> Vous vous faites chargé par un sanglier lors de votre fuite.\n")
+    else print_string (delimiteur() ^ "> Une nuée de moustique vous encercle lors de votre fuite.\n")
+    in   
+    (combattre 1 perso monstre)
+  else 
+    perso
 ;;
 
+(** EXTENSION
 let fuir : Personnage.perso -> Personnage.perso = fun perso ->
   let taille = List.length(perso.sac) in
   if 0 < taille then 
@@ -131,7 +138,7 @@ let fuir : Personnage.perso -> Personnage.perso = fun perso ->
   else perso
 ;;
 
-let continuerAventure = fun perso ->
+  let continuerAventure = fun perso ->
   let monstre = Monstre.init_monstre() in
   let () = 
   if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ "> Le sol tremble sous vos pied, vous êtes destabilisé. \nquand soudain un golem apparait devant vous.\n")
@@ -146,15 +153,16 @@ let continuerAventure = fun perso ->
   in
   aux perso
 ;;
+*)
 
 let rec hubAventure = fun perso ->
   let c = read_hubAventure() in
-  if      c="C" || c="c" then hubAventure (continuerAventure perso)
-  else if c="D" || c="d" then (print_string (delimiteur() ^ "> Vous installez votre campement et tombez rapidement endormie.\n"); hubAventure (Personnage.dormir perso))
+  if      c="C" || c="c" then (print_string (delimiteur() ^ "> Vous continuez votre chemin vers votre prochaine destination.\n"); hubAventure (malheureuse_rencontre perso))
+  else if c="D" || c="d" then (print_string (delimiteur() ^ "> Vous installez votre campement et tombez rapidement endormie.\n"); hubAventure (malheureuse_rencontre (Personnage.dormir perso)))
   else if c="M" || c="m" then 
     (let mange = Personnage.manger perso in 
-    if (fst mange) then (print_string (delimiteur() ^ "> Vous mangez un peu avant de reprendre votre aventure.\n"); hubAventure (snd mange))
-    else (print_string (delimiteur() ^ "> Vous n'avez pas à manger\n"); hubAventure (snd mange)))
+    if (fst mange) then (print_string (delimiteur() ^ "> Vous mangez un peu avant de reprendre votre aventure.\n"); hubAventure (malheureuse_rencontre (snd mange)))
+    else (print_string (delimiteur() ^ "> Vous n'avez pas à manger\n"); hubAventure (malheureuse_rencontre (snd mange))))
   else if c="V" || c="v" then (print_string (delimiteur()); Personnage.afficher_infos_perso perso; hubAventure perso)
   else raise Quitte_le_jeu
 ;;

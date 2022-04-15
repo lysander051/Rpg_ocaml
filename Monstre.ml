@@ -15,11 +15,11 @@ struct
     let x = Random.int 3 in 
     match x with 
       | 0 -> {creature = Golem ; loot = Objet.init_objet ; pv = 25 +( d 1 6 ) }
-      | 1 -> let moustique = (Random.int 25) in 
+      | 1 -> let moustique = (Random.int 19) in 
              {creature = Nuee moustique ; loot = Rien ; pv = 2 + moustique }
       | _ -> {creature = Sanglier ; loot = Objet.init_objet ; pv = 10 +(  d 1 4)  }    
   
-  let affiche_monstre=  fun monstre -> let s = match monstre.creature with
+  let affiche_monstre = fun monstre -> let s = match monstre.creature with
     | Golem -> "golem"
     | Nuee a -> " nuee de moustique"
     | Sanglier ->"sanglier"
@@ -27,12 +27,11 @@ struct
 
   let monstre_frapper : monstre -> float =fun monstre ->
     let chance = Random.int 100 in 
-    if chance < 50 then 0.
-    else
-      match monstre.creature with
-        | Golem -> 4.
-        | Sanglier -> 2. 
-        | Nuee moustique ->0.5 *. float(moustique)  
+    match monstre.creature with
+        | Golem when chance < 30 -> 4.
+        | Sanglier when chance < 50 -> 2. 
+        | Nuee moustique when chance < 70 ->0.5 *. float(moustique)  
+        | _ -> 0.
 
   let xp_gagne : monstre -> int = fun m-> match m.creature with
     | Golem -> 8

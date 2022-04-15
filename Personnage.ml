@@ -23,7 +23,7 @@ struct
     | (Femme, Magicien) -> "Magicienne"
 
   let init_perso = fun n -> fun g -> fun r ->
-    {nom = n; sexe = g; role = r; pv = 20.; xp = 0; niveau = 1; sac = [{type_obj = Objet.Eponge; qte = 1};{type_obj = Objet.Poulet; qte = 2};{type_obj = Objet.Piece; qte = 1}] }
+    {nom = n; sexe = g; role = r; pv = 20.; xp = 0; niveau = 1; sac = [] }
   
 
   let vie_perso = fun perso -> 
@@ -174,7 +174,7 @@ struct
         if niv=1 then  {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = pt_xp; niveau =niv ; sac = p.sac }
         else
           let nouv_xp =xp - (int_of_float niv_avant) in 
-          ( if niv != p.niveau then  (print_string ("Vous avez atteint le niveau " ^ (string_of_int niv)))) ;
+          ( if niv != p.niveau then (print_string ("Vous avez atteint le niveau " ^ (string_of_int niv)))) ;
           {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = nouv_xp; niveau =niv ; sac = p.sac }
       in aux p.niveau pt_xp
 
