@@ -7,7 +7,7 @@ exception Quitte_le_jeu;;
 
 let delimiteur = fun () ->"\n+--------------------------------------------------------------------------------+\n"
 
-let rec read_nom = fun () ->
+let rec read_nom  : unit -> string= fun () ->
   let () = print_string (delimiteur() ^ ">Ton nom: ") in
   let n = read_line() in
   if n="" then 
@@ -18,7 +18,7 @@ let rec read_nom = fun () ->
     n
 ;;
 
-let rec read_genre = fun () ->
+let rec read_genre : unit -> Personnage.genre= fun () ->
   let () = print_string (delimiteur() ^ 
 "> Ton genre: 
   F) Femme
@@ -31,7 +31,7 @@ else
   (if g="F" || g="f" then Personnage.Femme else Personnage.Homme)
 ;;
 
-let rec read_classe = fun g ->
+let rec read_classe : Personnage.genre -> Personnage.classe  = fun g ->
   let () = 
   if g = Personnage.Homme then 
     print_string (delimiteur() ^ 
@@ -43,8 +43,8 @@ Votre choix: ")
   else
     print_string (delimiteur() ^ 
 "> Ta classe: 
-  A) Archere
-  G) Guerriere
+  A) Archère
+  G) Guerrière
   M) Magicienne
 Votre choix: ")
   in 
@@ -60,7 +60,7 @@ Votre choix: ")
       Personnage.Magicien)
 ;;
 
-let rec read_action = fun() ->
+let rec read_action : unit -> string  = fun() ->
   let () = print_string (delimiteur() ^ 
 "> Que voulez-vous faire
   A) Attaquer  
@@ -74,7 +74,7 @@ Votre choix: ") in
     c
 ;;
 
-let rec read_hubAventure = fun () ->
+let rec read_hubAventure : unit -> string= fun () ->
   let () = print_string (delimiteur() ^
 "> Que voulez-vous faire?
  C) Continuer votre chemin
@@ -90,14 +90,14 @@ let c = read_line() in
     c
 ;;
 
-let rec init_aventure = fun ()->
+let rec init_aventure : unit -> Personnage.perso= fun ()->
   let n = read_nom() in
   let g = read_genre() in
   let c = read_classe g in
   Personnage.init_perso n g c
 ;;
 
-let combattre :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = fun premier pers monstre ->
+let combattre : Personnage.perso -> Monstre.monstre -> Personnage.perso = fun pers monstre ->
   let rec le_combat :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = fun attaquant p m -> 
     match attaquant  with 
       |0 -> let frappe=Personnage.frapper p in Personnage.affiche_attaque p frappe ; let pv_monstre= m.pv - frappe  in
@@ -108,19 +108,17 @@ let combattre :int -> Personnage.perso -> Monstre.monstre -> Personnage.perso = 
         in le_combat 1 p nouv_monstre
       |_-> let degat = (Monstre.monstre_frapper m) in (print_string (Monstre.message_combat m degat)) ; let nouv_pers=(Personnage.mis_a_jour_pv (-. degat ) p) 
         in le_combat 0 nouv_pers m
-     in le_combat premier pers monstre
+     in le_combat (Random.int 2) pers monstre
 ;; 
 
-let malheureuse_rencontre = fun perso->
+let malheureuse_rencontre : Personnage.perso -> Personnage.perso= fun perso->
   let rand = Random.int 100 in
   if rand < 50 then 
     let monstre = Monstre.init_monstre() in
     let () = 
-    if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ "> Un golem vous saute dessus au moment de votre fuite.\n")
-    else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ "> Vous vous faites chargé par un sanglier lors de votre fuite.\n")
-    else print_string (delimiteur() ^ "> Une nuée de moustique vous encercle lors de votre fuite.\n")
-    in   
-    (combattre 1 perso monstre)
+    print_string (delimiteur() ^ Monstre.message_malheureuse_rencontre monstre)
+   in
+    (combattre perso monstre)
   else 
     perso
 ;;
@@ -155,7 +153,7 @@ let fuir : Personnage.perso -> Personnage.perso = fun perso ->
 ;;
 *)
 
-let rec hubAventure = fun perso ->
+let rec hubAventure : Personnage.perso -> unit= fun perso ->
   let c = read_hubAventure() in
   if      c="C" || c="c" then (print_string (delimiteur() ^ "> Vous continuez votre chemin vers votre prochaine destination.\n"); hubAventure (malheureuse_rencontre perso))
   else if c="D" || c="d" then (print_string (delimiteur() ^ "> Vous installez votre campement et tombez rapidement endormie.\n"); hubAventure (malheureuse_rencontre (Personnage.dormir perso)))

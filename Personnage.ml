@@ -14,15 +14,15 @@ struct
   exception LevelMax
   exception Tue_En_Dormant of Monstre.monstre 
   
-  let classe_genre = fun perso -> match (perso.sexe, perso.role) with
+  let classe_genre : perso -> string = fun perso -> match (perso.sexe, perso.role) with
     | (Homme, Archer) -> "Archer"
     | (Homme, Guerrier) -> "Guerrier"
     | (Homme, Magicien) -> "Magicien" 
-    | (Femme, Archer) -> "Archere"
-    | (Femme, Guerrier) -> "Guerriere"
+    | (Femme, Archer) -> "Archère"
+    | (Femme, Guerrier) -> "Guerrière"
     | (Femme, Magicien) -> "Magicienne"
 
-  let init_perso = fun n -> fun g -> fun r ->
+  let init_perso: string -> genre -> classe -> perso = fun n -> fun g -> fun r ->
     {nom = n; sexe = g; role = r; pv = 20.; xp = 0; niveau = 1; sac = [] }
   
 
@@ -112,8 +112,10 @@ struct
 
   let afficher_infos_perso = fun perso -> print_string(etat_perso perso)
 
-  let mis_a_jour_pv = fun ajoutPv-> fun perso ->
-    if perso.pv +. ajoutPv > 20. then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = 20.; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
+  let mis_a_jour_pv : float -> perso -> perso = fun ajoutPv-> fun perso ->
+    if perso.pv +. ajoutPv > 20. 
+      then 
+        {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = 20.; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
     else 
       if(* perso.pv +. ajoutPv < 20. && *)perso.pv +. ajoutPv > 0. then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv+.ajoutPv; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
       else raise Personnage_mort
@@ -132,18 +134,18 @@ struct
       match sac with
       | [] -> false
       | {type_obj=a; qte=b}::_ when a=Poulet && b>0 -> true
-      | h::t -> false || aux t
+      | h::t -> (*false ||*) aux t
     in aux pers.sac
 
-  let modifier_sac = fun t_obj n perso ->
-    let rec aux = fun t_obj n nouveauSac persoSac ->
+  let modifier_sac : Objet.type_obj -> int -> perso -> perso = fun t_obj n perso ->
+    let rec aux = fun(* t_obj n *)nouveauSac persoSac ->
       match persoSac with
       | [] when n<=0 -> {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = nouveauSac }
       | [] -> {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = {type_obj = t_obj; qte = n}::nouveauSac }
-      | {type_obj=a; qte=b}::t when a=t_obj && b=(-n) -> aux t_obj n (nouveauSac) t
-      | {type_obj=a; qte=b}::t when a=t_obj && b>(-n) -> aux t_obj n ({type_obj=a; qte=b+n}::nouveauSac) t 
-      | h::t -> aux t_obj n (h::nouveauSac) t
-    in aux t_obj n [] perso.sac
+      | {type_obj=a; qte=b}::t when a=t_obj && b=(-n) -> aux(* t_obj n *)(nouveauSac) t
+      | {type_obj=a; qte=b}::t when a=t_obj && b>(-n) -> aux(* t_obj n*) ({type_obj=a; qte=b+n}::nouveauSac) t 
+      | h::t -> aux (*t_obj n*) (h::nouveauSac) t
+    in aux(* t_obj n*) [] perso.sac
 
   let manger : perso -> (bool *perso) = fun perso ->
     if (not(avoir_un_poulet perso) )  then (false,perso)
@@ -176,7 +178,25 @@ struct
           let nouv_xp =xp - (int_of_float niv_avant) in 
           ( if niv != p.niveau then (print_string ("Vous avez atteint le niveau " ^ (string_of_int niv)))) ;
           {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = nouv_xp; niveau =niv ; sac = p.sac }
-      in aux p.niveau pt_xp
+      in aux p.niveau pt_xp 
+
+      (* A NE PAS EFFACER*)
+  (*let changement_niveau_vrai : perso -> int -> perso = fun p xp -> 
+    let rec aux = fun niveau  ->
+    let xp_final_niveau = (2.**float(niveau))*.10. in 
+    if (float)xp >= xp_final_niveau then
+      aux (niveau+1) 
+    else
+      if niveau = p.niveau then
+        {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = xp; niveau =p.niveau ; sac = p.sac }
+      else 
+        let xp_niveau_avant =(2.**float(niveau-1))*.10. in 
+        let nouv_xp = xp - ( int_of_float xp_niveau_avant) in 
+        if nouv_xp >0 then let ()=(print_string ("Vous avez atteint le niveau " ^ (string_of_int niveau))) in 
+        {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = nouv_xp; niveau =niveau ; sac = p.sac }
+       
+      in aux p.niveau *)
+    
 
   let affiche_attaque :perso -> int -> unit = fun p frappe ->    
     match frappe with 

@@ -22,5 +22,5 @@ with
   | GestionAventure.Quitte_le_jeu -> raison_fin := "Votre personnage part à la retraite.\nVous ne mourrez pas aujourd'hui, du moins cette fois-ci\n\n"
 ;;
 print_string "\n\n+---------------------------------Fin de partie----------------------------------+\n";;
-print_string "> La partie c'est terminé car: \n";;
+print_string "> La partie s'est terminé car: \n";;
 print_string !raison_fin;;
