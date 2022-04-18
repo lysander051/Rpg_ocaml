@@ -1,6 +1,21 @@
 open Objet;;
 (*Random.self_init();;*)
-module Monstre =
+
+module type MONSTRE_SIG =
+sig
+  type type_monstre = Golem | Sanglier | Nuee of int
+  type monstre = { creature : type_monstre; loot : Objet.type_obj; pv : int}
+  val init_monstre : unit -> monstre
+  val nom_monstre : monstre -> string
+  val xp_gagne : monstre -> int
+  val monstre_vaincu : monstre -> unit
+  val monstre_frapper : monstre -> float
+  val message_combat : monstre -> float -> string
+  val message_malheureuse_rencontre : monstre -> string
+  val nom_monstre_tueur_nuit : monstre -> string
+end;;
+
+module Monstre : MONSTRE_SIG =
 struct 
 
   type type_monstre = Golem | Sanglier | Nuee of int
@@ -24,16 +39,16 @@ struct
     | Nuee a -> "La nuée composée de " ^ string_of_int a ^ "moustiques"
     | Sanglier ->"Le sanglier"
   in
-  let point_vie = match  monstre.pv with 
-| 1 -> " a "^ (string_of_int monstre.pv) ^" point de vie "
-| _ -> " a "^ (string_of_int monstre.pv) ^ "points de vie "
-in
-  let a_objet =match monstre.loot with
+  let point_vie = match monstre.pv with 
+    | 1 -> " a "^ (string_of_int monstre.pv) ^" point de vie "
+    | _ -> " a "^ (string_of_int monstre.pv) ^ "points de vie "
+  in
+  let a_objet = match monstre.loot with
     |Rien ->" et ne possède pas d'objet à récupérer"
     |Eponge -> " et possède une éponge pouvant être récupérer"
     |Piece -> " et possède une pièce "
     |Poulet -> " et possède un poulet à récupérer"
-in  print_string(s ^point_vie ^ a_objet ^ "\n" )
+  in print_string(s ^point_vie ^ a_objet ^ "\n" )
 
   let monstre_frapper : monstre -> float = fun monstre ->
     let chance = Random.int 100 in 
@@ -57,14 +72,14 @@ in  print_string(s ^point_vie ^ a_objet ^ "\n" )
         | Sanglier -> "Le sanglier vous attaque et vous perdez "^ (string_of_int (int_of_float degat)) ^ " points de vie\n"
         | Nuee _ -> "La nuée de moustiques vous attaque et vous perdez "^ (string_of_float degat) ^ " points de vie\n"
         
-  let nom_monstre = fun m ->
+  let nom_monstre : monstre -> string = fun m ->
     match m.creature with
     | Golem -> "Le golem"
     | Sanglier -> "Le sanglier"
     | Nuee _ -> "La nuée de moustique"
 
-    let nom_monstre_tueur_nuit = fun m ->
-      match m.creature with
+  let nom_monstre_tueur_nuit : monstre -> string = fun m ->
+    match m.creature with
       | Golem -> "Un golem"
       | Sanglier -> "Un sanglier"
       | Nuee _ -> "Une nuée de moustique"
