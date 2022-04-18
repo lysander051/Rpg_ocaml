@@ -7,6 +7,8 @@ exception Quitte_le_jeu;;
 
 let delimiteur = fun () ->"\n+--------------------------------------------------------------------------------+\n"
 
+(**
+*)
 let rec read_nom  : unit -> string= fun () ->
   let () = print_string (delimiteur() ^ ">Ton nom: ") in
   let n = read_line() in

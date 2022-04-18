@@ -5,13 +5,21 @@ sig
 	type type_obj = | Poulet | Eponge | Piece | Rien
 	val init_objet : unit -> type_obj
 	val affiche_objet : type_obj -> int -> string
-	val visuel_objet : type_obj -> int -> string
 end;;
 
 module Objet : OBJET_SIG =
 struct 
+	(**
+		Le type d'objet peut être un poulet, une éponge, une pièce ou rien
+		@auteur 
+	*)
 	type type_obj = | Poulet | Eponge | Piece | Rien
 	
+	(**
+		Initiation d'un objet aléatoire ou rien
+		@auteur 
+		@param
+	*)
 	let init_objet : unit -> type_obj = fun () -> 
 		let n= Random.int 4 in 
 			match n with 
@@ -19,7 +27,12 @@ struct
 				| 1 -> Eponge
 				| 2 -> Piece
 				| _ -> Rien
-
+	
+	(**
+		Le texte adapté à chaque objet selon son nombre
+		@auteur
+		@param obj l'objet dont on veut afficher
+	*)
 	let affiche_objet : type_obj -> int -> string = fun obj n->
 	match obj with 
 			| Poulet when n=1 -> "poulet"
@@ -31,6 +44,8 @@ struct
 			| Rien -> "rien"	
 			| _ -> "rien"
 
+
+	(*
 	let visuel_objet : type_obj -> int -> string = fun obj n->
 		match obj with 
 			| Poulet when n=1 -> " Poulet  :  " ^ string_of_int(n)
@@ -40,5 +55,5 @@ struct
 			| Piece when n=1->   " Pièce   :  " ^ string_of_int(n) 
 			| Piece when n>1-> 	 " Pièces  :  " ^ string_of_int(n)
 			| _ -> "                "
-
+		*)
 end;;
