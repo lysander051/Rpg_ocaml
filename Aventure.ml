@@ -23,6 +23,7 @@ with
   | Personnage.LevelMax -> raison_fin := "Votre aventure est terminée, vous êtes la personne la plus expérimentée au monde. \n(même les développeurs on dû tricher pour voir ce message)\n\n"
   | GestionAventure.Quitte_le_jeu -> raison_fin := "Votre personnage part à la retraite.\nVous ne mourrez pas aujourd'hui, du moins cette fois-ci\n\n"
 ;;
+
 print_string "\n\n+---------------------------------Fin de partie----------------------------------+\n";;
 print_string "> La partie s'est terminé car: \n";;
 print_string !raison_fin;;

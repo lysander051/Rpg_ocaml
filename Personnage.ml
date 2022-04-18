@@ -51,59 +51,58 @@ struct
 
   let string_of_pv : perso -> string = fun p ->
   let pv=(string_of_float p.pv) in 
-  if p.pv <10. then "0"^pv
+  if p.pv <10. then "0" ^ pv
   else pv
 
   let string_of_xp : perso -> string = fun p ->
   let xp = (string_of_int p.xp) in 
-  if p.xp<10 then "0"^xp
+  if p.xp<10 then "0" ^ xp
   else xp
 
   let  etat_sac : perso -> string = fun perso ->
     let rec aux : sac -> string = fun sac ->
-    match sac with
-    | [] -> "" 
-    | hd::tl when hd.type_obj=Rien ->""^aux tl
-    | hd::tl -> ((string_of_int hd.qte) ^ "  " ^(Objet.affiche_objet hd.type_obj hd.qte)) ^ "\n" ^ aux tl
+      match sac with
+        | [] -> "" 
+        | hd::tl when hd.type_obj=Rien ->""^aux tl
+        | hd::tl -> ((string_of_int hd.qte) ^ "  " ^(Objet.affiche_objet hd.type_obj hd.qte)) ^ "\n" ^ aux tl
     in aux perso.sac
 
-  let nb_string = fun st->
-    let rec auxi : int ->string -> int= fun fois  s ->
-      let len = String.length s in
-      match s with
-      |"" -> 0
-      | _ ->(let debut = (String.sub s 0 1) in
-      let verif=(String.escaped debut) in
-      if debut=verif then 0 + ( auxi 0 (String.sub s 1 (len-1) ))
-      else 
-       (if fois=0
-        then
-        1+(auxi (fois+1) (String.sub  s 1 (len-1)))
-    else
-      0+(auxi (0) (String.sub  s 1 (len-1)))))
-     in
+    let nb_string = fun st->
+      let rec auxi : int ->string -> int= fun fois  s ->
+        let len = String.length s in
+          match s with
+          |"" -> 0
+          | _ ->(let debut = (String.sub s 0 1) in
+        let verif=(String.escaped debut) in
+          if debut=verif then
+             0 + ( auxi 0 (String.sub s 1 (len-1) ))
+          else 
+            (if fois=0  then
+              1+(auxi (fois+1) (String.sub  s 1 (len-1)))
+            else
+              0+(auxi (0) (String.sub  s 1 (len-1)))))
+      in
       ((String.length st) - (auxi 0 st));;
   
-  let etat_perso = fun perso ->
-    let debut= "|  " in
-    let fin="  |\n" in 
-    let premiere_ligne = 
+let etat_perso : perso -> string = fun perso ->
+  let debut= "|  " in
+  let fin="  |\n" in 
+  let premiere_ligne = 
     debut ^ perso.nom ^ "  |  " ^ (classe_genre perso) ^ "  niveau  " ^ (string_of_int(perso.niveau)) ^ fin in
-      let reference = nb_string premiere_ligne in
-      let delimitateur = "+"^ (String.make (reference-2) '-') ^"+\n"
-    in   
-      let make_ligne = fun reference debut fin ligne point -> 
-        (let debut_ligne = debut ^ ligne in 
-        let taille_ligne = nb_string (debut_ligne^point^fin) in
-        let nb_espace = reference - taille_ligne in 
+  let reference = nb_string premiere_ligne in
+  let delimitateur = "+"^ (String.make (reference-2) '-') ^"+\n" in   
+  let make_ligne = fun reference debut fin ligne point -> 
+      (let debut_ligne = debut ^ ligne in 
+      let taille_ligne = nb_string (debut_ligne^point^fin) in
+      let nb_espace = reference - taille_ligne in 
         debut_ligne ^( String.make nb_espace ' ' )^ point ^ fin )
-    in 
-      let pv="Points de vie  |" in
-      let experience = make_ligne (String.length pv) "" "  |" "Expérience" "" in 
-      delimitateur^premiere_ligne ^delimitateur^
-      (make_ligne reference debut fin pv (string_of_pv perso) ) ^ delimitateur^
-      (make_ligne reference debut fin experience (string_of_xp perso) ) ^ delimitateur^
-      (make_ligne reference debut fin "Sac" "" ) ^
+  in 
+  let pv="Points de vie  |" in
+  let experience = make_ligne (String.length pv) "" "  |" "Expérience" "" in 
+    delimitateur^premiere_ligne ^delimitateur^
+    (make_ligne reference debut fin pv (string_of_pv perso) ) ^ delimitateur^
+    (make_ligne reference debut fin experience (string_of_xp perso) ) ^ delimitateur^
+    (make_ligne reference debut fin "Sac" "" ) ^
     
   let rec chq_ligne_sac = fun reference debut fin s ->
     let len_s= String.length s in
@@ -126,15 +125,9 @@ struct
       else if perso.pv = 11. || perso.pv = 12. || perso.pv = 13. || perso.pv = 14. || perso.pv = 15. || perso.pv = 16. || perso.pv = 17. || perso.pv = 18. || perso.pv = 19. || perso.pv = 20.
            then string_of_float(perso.pv) ^ "/20." ^ " |"
            else if perso.pv <= 10. then string_of_float(perso.pv) ^ "/20." ^ " |"
-           else string_of_float(perso.pv) ^ "/20." ^ "|" *)
-        
-  let nb_degats = fun perso -> 
-    match perso.role with
-    | Archer -> "4"
-    | Guerrier -> "10"
-    | Magicien -> "5"     
+           else string_of_float(perso.pv) ^ "/20." ^ "|" 
       
- (* let chance_toucher = fun perso niveau -> match (perso.role, perso.niveau) with
+  let chance_toucher = fun perso niveau -> match (perso.role, perso.niveau) with
     | (Archer, n) -> if n > 2 then string_of_int(70+5*perso.niveau) else "70"
     | (Guerrier, n) -> if n > 2 then string_of_int(30+5*perso.niveau) else "30" 
     | (Magicien, n) -> if n > 2 then string_of_int(50+5*perso.niveau) else "50"
@@ -208,99 +201,85 @@ struct
   let afficher_infos_perso = fun perso -> print_string(etat_perso perso)
   *)
  
-
   let mis_a_jour_pv : float -> perso -> perso = fun ajoutPv-> fun perso ->
-    if perso.pv +. ajoutPv > 20. 
-      then 
+    if (perso.pv +. ajoutPv > 20.) then 
         {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = 20.; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
     else 
-      if(* perso.pv +. ajoutPv < 20. && *)perso.pv +. ajoutPv > 0. then {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv+.ajoutPv; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
-      else raise Personnage_mort
+      if (perso.pv +. ajoutPv > 0.) then 
+        {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv+.ajoutPv; xp = perso.xp; niveau = perso.niveau; sac = perso.sac }
+      else 
+        raise Personnage_mort
 
   let frapper : perso -> int = fun perso ->
-    let chance = Random.int 100 in  let add_bonus=5*((perso.niveau) -1 ) in
-    match perso.role with 
-    | Archer when chance <70 + add_bonus -> 4
-    | Magicien when chance <50 +add_bonus ->5
-    | Guerrier when chance < 30 + add_bonus ->10
-    | _ -> 0 
-
+    let chance = Random.int 100 in  
+    let add_bonus=5*((perso.niveau) -1 ) in
+      match perso.role with 
+        | Archer when chance <70 + add_bonus -> 4
+        | Magicien when chance <50 +add_bonus ->5
+        | Guerrier when chance < 30 + add_bonus ->10
+        | _ -> 0
+    
   let avoir_un_poulet : perso -> bool = fun pers ->
     let rec aux = fun sac -> 
       match sac with
-      | [] -> false
-      | {type_obj=a; qte=b}::_ when a=Poulet && b>0 -> true
-      | h::t -> (*false ||*) aux t
+        | [] -> false
+        | {type_obj=a; qte=b}::_ when a=Poulet && b>0 -> true
+        | h::t -> (*false ||*) aux t
     in aux pers.sac
 
   let modifier_sac : Objet.type_obj -> int -> perso -> perso = fun t_obj n perso ->
     if t_obj = Rien then perso
     else 
-    let rec aux :  sac -> sac -> perso= fun(* t_obj n *) nouveauSac persoSac ->
-      match persoSac with
-      | [] when n<=0 -> {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = nouveauSac }
-      | [] ->  {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = (nouveauSac @ [{type_obj = t_obj; qte = n}]) }
-      | {type_obj=a; qte=b}::t when a=t_obj && b=(-n) -> aux(* t_obj n *) (nouveauSac) t
-      |{type_obj=a; qte=b}::t when a=t_obj && b<(-n) -> raise (Objet_insuffisant a)
-
-     | {type_obj=a; qte=b}::t when a=t_obj && b>(-n) -> let le_sac = (nouveauSac @ ({type_obj=a; qte=b+n}:: t) ) in
-     {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = le_sac }
-      | h::t -> aux (*t_obj n*)  (nouveauSac @ [h]) t
-    in aux(* t_obj n*) [] (perso.sac) 
+      let rec aux :  sac -> sac -> perso= fun nouveauSac persoSac ->
+        match persoSac with
+          | [] when n<=0 -> {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = nouveauSac }
+          | [] ->  {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = (nouveauSac @ [{type_obj = t_obj; qte = n}]) }
+          | {type_obj=a; qte=b}::t when a=t_obj && b=(-n) -> aux (nouveauSac) t
+          |{type_obj=a; qte=b}::t when a=t_obj && b<(-n) -> raise (Objet_insuffisant a)
+          | {type_obj=a; qte=b}::t when a=t_obj && b>(-n) -> 
+              let le_sac = (nouveauSac @ ({type_obj=a; qte=b+n}:: t) ) in
+                {nom = perso.nom; sexe = perso.sexe; role = perso.role; pv = perso.pv; xp = perso.xp; niveau = perso.niveau; sac = le_sac }
+          | h::t -> aux (nouveauSac @ [h]) t
+      in aux [] (perso.sac)
+  
 
   let manger : perso -> (bool *perso) = fun perso -> 
-    if (not(avoir_un_poulet perso) )  then (false,perso)
-    else (true, (modifier_sac (Objet.Poulet) (-1) (mis_a_jour_pv 2. perso)))    
-
-  let dormir : perso -> perso = 
-    fun perso -> let chance_monstre = Random.int 100 in
-    if (chance_monstre<5) 
-      then let lemonstre = Monstre.init_monstre() in 
-      ((print_string ("Malheureusement, vous vous faites attaquer dans la nuit.\n" ^ Monstre.nom_monstre lemonstre ^ " vous attaque et vous êtes mort.\n")); 
-      raise (Tue_En_Dormant lemonstre))
+    if (not(avoir_un_poulet perso) )  then 
+      (false,perso)
     else 
-      print_string ("Vous passez une nuit revigorante et êtes prêt à reprendre l'aventure... \nOu redormir\n");
-      mis_a_jour_pv 4. perso
+      (true, (modifier_sac (Objet.Poulet) (-1) (mis_a_jour_pv 2. perso)))
+    
 
- (* let rec changement_niveau :int -> float -> int*int = fun niv xp  ->
-    let niv_1 = (2.**float(niv))*.10. in let niv_2= (2.**float(niv+1))*.10. in 
-    if xp >= niv_2 then changement_niveau (niv+1) xp
-    else let nouv_xp = xp -. niv_1 in (niv,(int_of_float nouv_xp))*)
-
- (* let changement_niveau : perso -> int -> perso = fun p pt_xp ->
-    let rec aux : int -> int -> perso = fun niv xp  ->
-      let niv_1 = (2.**float(niv))*.10. in let niv_avant= (2.**float(niv-1))*.10. in 
-      if (float)xp >= niv_1 then 
-        if 10 <= (niv+1) then raise LevelMax
-        else aux (niv+1) xp 
+  let dormir : perso -> perso = fun perso -> 
+    let chance_monstre = Random.int 100 in
+      if (chance_monstre<5) then 
+        let lemonstre = Monstre.init_monstre() in 
+        ((print_string ("Malheureusement, vous vous faites attaquer dans la nuit.\n" ^ Monstre.nom_monstre lemonstre ^ " vous attaque et vous êtes mort.\n")); 
+        raise (Tue_En_Dormant lemonstre))
       else 
-        if niv=1 then  {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = pt_xp; niveau =niv ; sac = p.sac }
-        else
-          let nouv_xp =xp - (int_of_float niv_avant) in 
-          ( if niv != p.niveau then (print_string ("Vous avez atteint le niveau " ^ (string_of_int niv)))) ;
-          {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = nouv_xp; niveau =niv ; sac = p.sac }
-      in aux p.niveau pt_xp  *)
+        print_string ("Vous passez une nuit revigorante et êtes prêt à reprendre l'aventure... \nOu redormir\n");
+        mis_a_jour_pv 4. perso
 
-      (* A NE PAS EFFACER*)
- let changement_niveau : perso -> int -> perso = fun p xp ->
-  let rec aux : int -> int -> perso= fun le_xp le_niveau ->
-    let xp_final_du_niveau =int_of_float( (2. ** float(le_niveau) )*. 10. )in 
-    if le_niveau = 10 then
-      raise LevelMax
-    else 
-    if le_xp < xp_final_du_niveau then
-      {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = le_xp; niveau =le_niveau ; sac = p.sac }
-    else
-      let nouv_xp = le_xp - xp_final_du_niveau in 
-      let nouv_niveau = le_niveau +1 in 
-      aux nouv_xp nouv_niveau
-    in aux xp p.niveau   
+  let changement_niveau : perso -> int -> perso = fun p xp ->
+    let rec aux : int -> int -> perso= fun le_xp le_niveau ->
+      let xp_final_du_niveau =int_of_float( (2. ** float(le_niveau) )*. 10. )in 
+      if le_niveau = 10 then
+        raise LevelMax
+      else 
+        if le_xp < xp_final_du_niveau then
+          {nom = p.nom ; sexe = p.sexe; role = p.role; pv = p.pv; xp = le_xp; niveau =le_niveau ; sac = p.sac }
+        else
+          let nouv_xp = le_xp - xp_final_du_niveau in 
+          let nouv_niveau = le_niveau +1 in 
+          aux nouv_xp nouv_niveau
+    in aux xp p.niveau
+    
 
   let affiche_attaque :perso -> int -> unit = fun p frappe ->    
     match frappe with 
-    | 0 -> ( print_string "Vous portez une attaque, mais vous manquez votre cible \n")
-    | _ -> ( print_string ("Vous frappez et infligez "^  (nb_degats p) ^ " points de dégât \n"))
-    (* | _ -> ( print_string  "Vous frappez et infligez " ^  (nb_degats p) ^ "points de dégât")*)
+      | 0 -> ( print_string "Vous portez une attaque, mais vous manquez votre cible \n")
+      | _ -> ( print_string ("Vous frappez et infligez "^  (nb_degats p) ^ " points de dégât \n"))
+
 
 end;;
 
