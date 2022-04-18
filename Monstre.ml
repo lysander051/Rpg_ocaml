@@ -63,6 +63,12 @@ in  print_string(s ^point_vie ^ a_objet ^ "\n" )
     | Sanglier -> "Le sanglier"
     | Nuee _ -> "La nuée de moustique"
 
+    let nom_monstre_tueur_nuit = fun m ->
+      match m.creature with
+      | Golem -> "Un golem"
+      | Sanglier -> "Un sanglier"
+      | Nuee _ -> "Une nuée de moustique"
+
   let monstre_vaincu : monstre -> unit = fun m ->let obj_recuperer = 
     match m.loot with
     | Rien -> "mais dommage il ne vous a rien laissé "
@@ -77,7 +83,7 @@ in  print_string(s ^point_vie ^ a_objet ^ "\n" )
       | Golem ->"> Le sol tremble sous vos pied, vous êtes destabilisé. \nquand soudain un golem apparait devant vous.\n"
       | Sanglier ->"> Une odeur forte que vous connaissez bien, vous parvient. \nUn sanglier sort des bois et vous attaque.\n"
       | Nuee a ->  "> Vous entendez un bourdonnement tout autour de vous. \nQuand soudain une nuée " ^
-      (if a=1 then "d'un moustique " else "de " ^ string_of_int a ^ "moustiques " )
+      (if a=1 then "d'un moustique " else "de " ^ string_of_int a ^ " moustiques " )
       ^ " se jette sur vous.\n"
      
 end;;
