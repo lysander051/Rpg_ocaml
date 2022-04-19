@@ -92,21 +92,6 @@ Votre choix: ")
         else 
           Personnage.Magicien)
 
-(*
-let rec read_action : unit -> string  = fun() ->
-  let () = print_string (delimiteur() ^ 
-"> Que voulez-vous faire
-  A) Attaquer  
-  F) Fuir 
-  V) Voir l'état de votre perso
-Votre choix: ") in
-  let c = read_line() in
-    if not(c="A" || c="F" || c="V" || c="a" || c="f" || c="v") then 
-      (print_string "il faut faire un choix\n"; read_action())
-    else 
-      c
-*)
-
 	(**
 		Vérifie la validité du choix du joueur pour le hub d'aventure
 		@auteur 
@@ -185,36 +170,6 @@ Au fait qui es-tu aventurier?\n") in
         in (combattre perso monstre)
       else 
         perso
-
-(** EXTENSION
-let fuir : Personnage.perso -> Personnage.perso = fun perso ->
-  let taille = List.length(perso.sac) in
-  if 0 < taille then 
-    (let obj = List.nth perso.sac (Random.int taille) in
-    let () = print_string (delimiteur() ^"> Vous perdez 1 " ^ Objet.affiche_objet obj.type_obj 1 ^"\n") in
-    let personnage = Personnage.modifier_sac obj.type_obj (-1) perso in
-    let rand = Random.int 10 in
-    if rand < 1 then malheureuse_rencontre personnage
-    else personnage)
-  else perso
-;;
-
-  let continuerAventure = fun perso ->
-  let monstre = Monstre.init_monstre() in
-  let () = 
-  if monstre.creature = Monstre.Golem then print_string (delimiteur() ^ "> Le sol tremble sous vos pied, vous êtes destabilisé. \nquand soudain un golem apparait devant vous.\n")
-  else if monstre.creature = Monstre.Sanglier then print_string (delimiteur() ^ "> Une odeur forte que vous connaissez bien, vous parvient. \nUn sanglier sort des bois et vous attaque.\n")
-  else print_string (delimiteur() ^ "> Vous entendez un bourdonnement tout autour de vous. \nQuand soudain une nué de moustique se jette sur vous.\n")
-  in   
-  let rec aux = fun perso ->
-    let choix = read_action() in
-    if choix = "A" || choix = "a" then (combattre 0 perso monstre)
-    else if choix = "F" || choix = "f" then fuir perso
-    else (print_string (delimiteur()); Personnage.afficher_infos_perso perso; aux perso)
-  in
-  aux perso
-;;
-*)
 
 	(**
 		affiche les hub de l'aventure avec les différents choix
