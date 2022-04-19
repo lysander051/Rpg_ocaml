@@ -33,6 +33,7 @@ struct
   @auteur 
   @param x le nombre de chiffres à tirer
   @param n le chiffre maximum pouvant être tiré
+  @return la somme de x nombres tirés aléatoirement entre 1 et n
   *)
   let rec d  : int -> int -> int = fun x n -> 
     match x with 
@@ -46,7 +47,7 @@ struct
   si c'est une nuée de moustique 
   ou bien selon un critère en utilisant la fonction "d x n"
   @auteur
-  @param
+  @return un monstre
   *)
   let init_monstre : unit -> monstre = fun () ->
     let x = Random.int 3 in 
@@ -80,6 +81,7 @@ struct
   Le point de vie que le personnage perd quand le monstre frappe 
   @auteur
   @param monstre le monstre qui frappe
+  @return le dégat causé à un personnage quand le monstre frappe
   *)
   let monstre_frapper : monstre -> float = fun monstre ->
     let chance = Random.int 100 in 
@@ -93,6 +95,7 @@ struct
    Le point d'expériences gagné quand le personnage a vaincu le monstre 
    @auteur
    @param monstre le monstre qui est vaincu
+   @return le point d'expérience récupéré par le personnage quand il a gagné un combat
   *)
   let xp_gagne : monstre -> int = fun m-> 
     match m.creature with
@@ -106,6 +109,7 @@ struct
     @auteur
     @param m le monstre qui attaque
     @param degat le point de vie que le personnage perd si le monstre a réussi à frapper , 0 sinon
+    @return un message de la situation du combat quand c'est le monstre qui frappe
   *)
   let message_combat : monstre -> float -> string = fun m degat ->
     if degat= 0. then
@@ -120,6 +124,7 @@ struct
     La créature du monstre
     @auteur
     @param m le monstre dont on veut savoir le nom
+    @return le nom du monstre
   *)
   let nom_monstre : monstre -> string = fun m ->
     match m.creature with
@@ -131,6 +136,7 @@ struct
     La créature du monstre qui a tué le personnage en dormant
     @auteur
     @param m le monstre qui a tué le personnage
+    @return le nom du monstre
   *)
   let nom_monstre_tueur_nuit : monstre -> string = fun m ->
     match m.creature with
@@ -142,6 +148,7 @@ struct
     Un message quand le monstre a été vaincu par le personnage
     @auteur
     @param m le monstre qui est mort
+    @return un message quand le monstre est mort
   *)
   let monstre_vaincu : monstre -> unit = fun m ->
     let obj_recuperer = match m.loot with
@@ -156,6 +163,7 @@ struct
     Un message quand un monstre apparaît lors d'une malheureuse rencontre
     @auteur
     @param monstre le monstre qui apparaît
+    @return un message quand un monstre apparaît
   *)
   let message_malheureuse_rencontre : monstre -> string = fun monstre -> 
     match monstre.creature with

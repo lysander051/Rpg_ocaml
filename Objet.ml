@@ -18,7 +18,7 @@ struct
 	(**
 		Initiation d'un objet aléatoire ou rien
 		@auteur 
-		@param
+		@return un type d'objet
 	*)
 	let init_objet : unit -> type_obj = fun () -> 
 		let n= Random.int 4 in 
@@ -32,6 +32,7 @@ struct
 		Le texte adapté à chaque objet selon son nombre
 		@auteur
 		@param obj l'objet dont on veut afficher
+		@return un string de type objet selon son nombre
 	*)
 	let affiche_objet : type_obj -> int -> string = fun obj n->
 	match obj with 

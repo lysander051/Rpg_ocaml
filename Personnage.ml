@@ -81,6 +81,7 @@ struct
     La classe du personnage selon son genre
     @auteur
     @param perso le personnage dont on veut savoir la classe
+    @return le string de la classe selon le genre du personnage
   *)
   let classe_genre : perso -> string = fun perso -> match (perso.sexe, perso.role) with
     | (Homme, Archer) -> "Archer"
@@ -96,6 +97,7 @@ struct
     @param n le nom du personnage
     @param g le genre du personnage
     @param r le rôle du personnage
+    @return un personnage
   *)
   let init_perso : string -> genre -> classe -> perso = fun n -> fun g -> fun r ->
     {nom = n; sexe = g; role = r; pv = 20.; xp = 0; niveau = 1; sac = [] }
@@ -104,6 +106,7 @@ struct
     L'affichage du point de vie du personnage
     @auteur
     @param p le personnage dont on veut afficher le point de vie
+    @return un string du point de vie du personnage
   *)
   let string_of_pv : perso -> string = fun p ->
   let pv=(string_of_float p.pv) in 
@@ -114,6 +117,7 @@ struct
     L'affichage du point d'experience du personnage
     @auteur
     @param p le personnage dont on veut afficher le point d'expérience
+    @return un string du point d'expérience du personnage
   *)
   let string_of_xp : perso -> string = fun p ->
   let xp = (string_of_int p.xp) in 
@@ -125,6 +129,7 @@ struct
     Si le sac n'est pas vide alors tous les objets contenus dans le sac seront pris en compte
     @auteur
     @param perso le personnage possédant le sac
+    @return un texte d'affichage de l'état du sac
   *)
   let  etat_sac : perso -> string = fun perso ->
     let rec aux : sac -> string = fun sac ->
@@ -138,6 +143,7 @@ struct
     La longueur d'un string même avec n'importe quelle caractère
     @auteur
     @param st le string dont on veut avoir la longueur 
+    @return la longueur d'un string
   *)
     let nb_string = fun st->
       let rec auxi : int ->string -> int= fun fois  s ->
@@ -161,6 +167,7 @@ struct
   le point de vie, le point d'expérience et l'état du sac
   @auteur 
   @param perso le personnage dont on veut avoir l'état 
+  @return un texte d'affichage de l'état du personnage
 
 *)
 let etat_perso : perso -> string = fun perso ->
@@ -297,6 +304,7 @@ let etat_perso : perso -> string = fun perso ->
     @param ajoutPv le point de vie donné à ajouter ou à déduire
     @param perso le personnage dont on veut mêtre à jour le point de vie
     @raise Personnage_mort quand le le point de vie du personnage est à 0
+    @return un personnage avec le point de vie mis à jour
   *)
   let mis_a_jour_pv : float -> perso -> perso = fun ajoutPv-> fun perso ->
     if (perso.pv +. ajoutPv > 20.) then 
@@ -313,6 +321,7 @@ let etat_perso : perso -> string = fun perso ->
         et selon son niveau un certain nombre de point de vie est déduit de son cible s'il arrive à le toucher
         @auteur
         @param perso le personnage qui frappe le monstre 
+        @return le nombre de dégat que le personnage inflige au monstre
   *)
   let frapper : perso -> int = fun perso ->
     let chance = Random.int 100 in  
@@ -325,9 +334,9 @@ let etat_perso : perso -> string = fun perso ->
   
   (**
     Pour savoir si le personnage possède un poulet
-    Si oui alors on renvoie true sinon false
     @auteur
     @param pers le personnage dont on veut savoir s'il possède un poulet
+    @return true si il a un poulet dans son sac false sinon
   *)
   let avoir_un_poulet : perso -> bool = fun pers ->
     let rec aux = fun sac -> 
@@ -345,6 +354,7 @@ let etat_perso : perso -> string = fun perso ->
     @param n la quantité de type d'objet dont on veut ajouter ou enlever
     @param perso le personnage dont on veut modifier le sac
     @raise Objet_insuffisant si le personnage ne possède pas assez du type d'objet dont on veut enlever
+    @return le personnage avec le nouveau sac 
   *)
   let modifier_sac : Objet.type_obj -> int -> perso -> perso = fun t_obj n perso ->
     if t_obj = Rien then perso
@@ -367,6 +377,7 @@ let etat_perso : perso -> string = fun perso ->
       Si le personnage ne possède pas de poulet, il ne peut pas manger
       @auteur
       @param perso le personnage qui veut manger
+      @return true et le personnage enlevé d'un poulet dans son sac ou false et le personnage initial
   *)
   let manger : perso -> (bool *perso) = fun perso -> 
     if (not(avoir_un_poulet perso) )  then 
@@ -381,6 +392,7 @@ let etat_perso : perso -> string = fun perso ->
       @auteur
       @param perso le personnage qui dort
       @raise Tue_En_Dormant monstre si le personnage est tué par le monstre durant son sommeil
+      @return le personnage avec des points de vie en plus ou bien un message indiquant sa mort
   *)
   let dormir : perso -> perso = fun perso -> 
     let chance_monstre = Random.int 100 in
@@ -400,6 +412,7 @@ let etat_perso : perso -> string = fun perso ->
       @param p le personnage joué
       @param xp le nouveau point d'expérience du personnage 
       @raise LevelMax quand le personnage atteint le niveau 10
+      @return le personnage avec peut être un augmentation de niveau ou bien un message indiquant la fin du jeu 
   *)
   let changement_niveau : perso -> int -> perso = fun p xp ->
     let rec aux : int -> int -> perso= fun le_xp le_niveau ->
@@ -420,10 +433,13 @@ let etat_perso : perso -> string = fun perso ->
     si il arrive à toucher sa cible
     @auteur
     @param p le personnage qui inflige le dégat
+    @return le nombre de point de vie retirer à un monstre si jamais le personnage touche sa cible
   *)
   let nb_degats = fun p ->
+    let add_bonus=5*((p.niveau) -1 ) in
+    add_bonus +
     match p.role with
-        | Archer -> 4
+        | Archer -> 4 
         | Magicien->5
         | Guerrier ->10
 
@@ -435,6 +451,7 @@ let etat_perso : perso -> string = fun perso ->
     @auteur
     @param p le personnage qui frappe
     @param frappe la frappe du personnage si c'est 0 alors il a manqué sa cible sinon il l'a eu
+    
   *)
   let affiche_attaque :perso -> int -> unit = fun p frappe ->    
     match frappe with 
