@@ -7,14 +7,17 @@ sig
 	val affiche_objet : type_obj -> int -> string
 end;;
 
+
 module Objet : OBJET_SIG =
 struct 
+
 	(**
 		Le type d'objet peut être un poulet, une éponge, une pièce ou rien
 		@auteur 
 	*)
 	type type_obj = | Poulet | Eponge | Piece | Rien
 	
+
 	(**
 		Initiation d'un objet aléatoire ou rien
 		@auteur 
@@ -28,6 +31,7 @@ struct
 				| 2 -> Piece
 				| _ -> Rien
 	
+				
 	(**
 		Le texte adapté à chaque objet selon son nombre
 		@auteur
@@ -35,12 +39,14 @@ struct
 		@return un string de type objet selon son nombre
 	*)
 	let affiche_objet : type_obj -> int -> string = fun obj n->
-	match obj with 
+		match obj with 
 			| Poulet when n=1 -> "poulet"
-			| Poulet when n>1 -> "poulets"
+			| Poulet  -> "poulets"
 			| Eponge when n=1 -> "éponge"
-			| Eponge when n>1 -> "éponges"
+			| Eponge-> "éponges"
 			| Piece when n=1-> "pièce"
-			| Piece when n>1-> "pièces"
-			| Rien -> "rien"
+			| Piece -> "pièces"
+			| Rien -> "rien"	
+			
+
 end;;
