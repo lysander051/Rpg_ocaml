@@ -13,14 +13,14 @@ struct
 
 	(**
 		Le type d'objet peut être un poulet, une éponge, une pièce ou rien
-		@auteur 
+		@auteur Bernier Guillaume
 	*)
 	type type_obj = | Poulet | Eponge | Piece | Rien
 	
 
 	(**
 		Initiation d'un objet aléatoire ou rien
-		@auteur 
+		@auteur Bernier Guillaume
 		@return un type d'objet
 	*)
 	let init_objet : unit -> type_obj = fun () -> 
@@ -34,7 +34,7 @@ struct
 				
 	(**
 		Le texte adapté à chaque objet selon son nombre
-		@auteur
+		@auteur Bernier Guillaume
 		@param obj l'objet dont on veut afficher
 		@return un string de type objet selon son nombre
 	*)

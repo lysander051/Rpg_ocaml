@@ -15,14 +15,14 @@ struct
 
 	(**
 		exception levée quand le joueur quitte l'aventure
-		@auteur 
+		@auteur Badet Maxime
 	*)
   exception Quitte_le_jeu;;
 
 
 	(**
 		Delimiteur de ligne pour chaque nouveau message de l'aventure
-		@auteur 
+		@auteur Badet Maxime
     @return un string de delimitation
 	*)
   let delimiteur : unit -> string = fun () ->"\n+--------------------------------------------------------------------------------+\n"
@@ -30,7 +30,7 @@ struct
 
 	(**
 		Permet de vérifier que le nom est correcte
-		@auteur 
+		@auteur Badet Maxime
     @return le nom valide du joueur
 	*)
   let rec read_nom  : unit -> string= fun () ->
@@ -47,7 +47,7 @@ struct
 
   (**
 		Transforme le choix en genre du joueur en constructeur de genre de personnage
-		@auteur 
+		@auteur Badet Maxime
     @return le genre du personnage
 	*)
   let rec read_genre : unit -> Personnage.genre= fun () ->  
@@ -65,7 +65,7 @@ Votre choix: ")
 
   (**
 		Transforme la classe choisie par le joueur en constructeur de classe de personnage
-		@auteur 
+		@auteur Badet Maxime
     @param g permet d'afficher un message adapté au genre du personnage
     @return la classe du joueur
 	*)
@@ -99,7 +99,7 @@ Votre choix: ")
           
 	(**
 		Vérifie la validité du choix du joueur pour le hub d'aventure
-		@auteur 
+		@auteur Badet Maxime
     @return un choix valide 
 	*)
   let rec read_hubAventure : unit -> string= fun () ->
@@ -120,7 +120,7 @@ Votre choix: ")
 
 	(**
 		Initialise le personnage et affiche le message de début d'aventure
-		@auteur 
+		@auteur Badet Maxime
     @return le personnage de debut d'aventure
 	*)
   let rec init_aventure : unit -> Personnage.perso = fun ()->
@@ -140,7 +140,7 @@ Au fait qui es-tu aventurier(ère)?\n") in
 
   (**
 		Gestion du combat entre le joueur et un monstre où le premier qui attaque est pris aléatoirement
-		@auteur 
+		@auteur Ravelonarivo Finaritra
     @param pers le personnage qui va combattre
     @param monstre le monstre qui va combattre
     @return le nouvel état du joueur
@@ -168,7 +168,7 @@ Au fait qui es-tu aventurier(ère)?\n") in
 
 	(**
 		Génére une rencontre avec un monstre aléatoirement
-		@auteur 
+		@auteur Badet Maxime
     @param pers le personnage principal
 	*)
   let malheureuse_rencontre : Personnage.perso -> Personnage.perso= fun perso->
@@ -183,7 +183,7 @@ Au fait qui es-tu aventurier(ère)?\n") in
         
 	(**
 		Affiche les hub de l'aventure avec les différents choix
-		@auteur 
+		@auteur Badet Maxime
     @param perso le personnage principal
 	*)
   let rec hubAventure : Personnage.perso -> unit = fun perso ->
@@ -214,7 +214,7 @@ Au fait qui es-tu aventurier(ère)?\n") in
 
 	(**
 		Affiche la raison de la fin de partie
-		@auteur 
+		@auteur Badet Maxime
     @param message le message de fin de partie
 	*)
   let fin_partie : string -> unit = fun message ->

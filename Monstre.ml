@@ -19,7 +19,7 @@ struct
 
   (**
   Le type du monstre peut être un golem, un sanglier ou une nuée de moustiques
-  @auteur
+  @auteur Ravelonarivo Finaritra
   *)
   type type_monstre = Golem | Sanglier | Nuee of int
 
@@ -27,14 +27,14 @@ struct
   (**
   Le monstre est une créature de type "type_monstre" possédant un objet de type "type_objet" 
   et ayant un point de vie de type "int"
-  @auteur 
+  @auteur Ravelonarivo Finaritra
   *)
   type monstre = { creature : type_monstre ; loot : Objet.type_obj ; pv : int}
 
 
   (**
   Renvoie la somme de x nombres tirés aléatoirement entre 1 et n
-  @auteur 
+  @auteur Ravelonarivo Finaritra
   @param x le nombre de chiffres à tirer
   @param n le chiffre maximum pouvant être tiré
   @return la somme de x nombres tirés aléatoirement entre 1 et n
@@ -49,7 +49,7 @@ struct
   Initialisation d'un monstre aléatoire possédant un objet aléatoire ou rien 
   et ayant un point de vie selon le nombre de moustique si c'est une nuée de moustiques 
   ou bien selon un critère en utilisant la fonction "d x n"
-  @auteur
+  @auteur Ravelonarivo Finaritra
   @return un monstre
   *)
   let init_monstre : unit -> monstre = fun () ->
@@ -63,7 +63,7 @@ struct
 
   (**
   Le point de vie que le personnage perd quand le monstre frappe 
-  @auteur
+  @auteur Ravelonarivo Finaritra
   @param monstre le monstre qui frappe
   @return le dégat causé à un personnage quand le monstre frappe
   *)
@@ -78,7 +78,7 @@ struct
 
   (**
    Le point d'expérience gagné quand le personnage a vaincu le monstre 
-   @auteur
+   @auteur Ravelonarivo Finaritra
    @param monstre le monstre qui est vaincu
    @return le point d'expérience récupéré par le personnage quand il a gagné un combat
   *)
@@ -91,7 +91,7 @@ struct
 
   (**
     La créature du monstre
-    @auteur
+    @auteur Ravelonarivo Finaritra
     @param m le monstre dont on veut savoir le nom
     @return le nom de la créature du monstre
   *)
@@ -105,7 +105,7 @@ struct
   (**
     Un message personnalisé selon le monstre quand il attaque 
     ou bien un message quand il rate le personnage
-    @auteur
+    @auteur Ravelonarivo Finaritra
     @param m le monstre qui attaque
     @param degat le point de vie que le personnage perd si le monstre a réussi à frapper , 0 sinon
     @return un message de la situation du combat quand c'est le monstre qui frappe
@@ -123,7 +123,7 @@ struct
 
   (**
     La créature du monstre qui a tué le personnage en dormant
-    @auteur
+    @auteur Ravelonarivo Finaritra
     @param m le monstre qui a tué le personnage quand ce dernier s'est endormi
     @return le nom de la créature  du monstre
   *)
@@ -135,7 +135,7 @@ struct
 
   (**
     Un message quand le monstre a été vaincu par le personnage
-    @auteur
+    @auteur Ravelonarivo Finaritra
     @param m le monstre qui est mort
     @return un message quand le monstre est mort
   *)
@@ -152,7 +152,7 @@ struct
 
   (**
     Un message quand un monstre apparaît lors d'une malheureuse rencontre
-    @auteur
+    @auteur Badet Maxime
     @param monstre le monstre qui apparaît
     @return un message quand un monstre apparaît
   *)
